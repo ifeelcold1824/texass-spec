@@ -1,3 +1,11 @@
 # texass-spec
 
-Specification for Texass application
+Specification for Texass (or the game) application
+
+## 场景预设
+* 本系统将作为发牌人，不参与游戏
+* 只要玩家数 >=2 即可开始游戏
+* 没有大小盲注
+* 玩家可以下注任意正整数金额，不超过场上筹码最少的玩家的金额数即可
+* 玩家可以加注到任意正整数金额，不超过场上筹码最少的玩家的金额数即可
+* 只要有玩家ALL IN，后续玩家无法再加注，游戏在回合结束后立即结束并结算
