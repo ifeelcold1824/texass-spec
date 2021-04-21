@@ -34,17 +34,21 @@
 
 ### 玩家选择BET行动时，金额不能小于前一名玩家的BET
 
-    |BET of previous players    |intended BET    |status of BET action  |
-    |---------------------------|----------------|----------------------|
-    |1                          |0               |can't                 |
+|BET of previous players    |intended BET    |status of BET action  |
+|---------------------------|----------------|----------------------|
+|1                          |0               |can't                 |
+|1                          |1               |can                   |
+|1                          |2               |can                   |
 
 * 前一名玩家按<BET of previous players>下注
 * 该玩家<status of BET action>进行金额为<intended BET>的BET
 
 ### 玩家BET时，金额不能大于当前场上筹码最少玩家的筹码数
 
-    |minimal counter of current players    |intended BET    |status of BET action  |
-    |--------------------------------------|----------------|----------------------|
-    |10                                    |11              |false                 |
+|minimal counter of current players    |intended BET    |status of BET action  |
+|--------------------------------------|----------------|----------------------|
+|10                                    |11              |cann't                |
+|10                                    |10              |can                   |
+|10                                    |9               |can                   |
 
 * 当场上筹码最少玩家的筹码数为<minimal counter of current players>, 该玩家<status of BET action>进行金额为<intended BET>的BET
