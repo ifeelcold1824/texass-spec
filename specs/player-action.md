@@ -39,6 +39,7 @@
 |1                          |0               |can't                 |
 |1                          |1               |can                   |
 |1                          |2               |can                   |
+|0                          |0               |can                   |
 
 * 前一名玩家按<BET of previous players>下注
 * 该玩家<status of BET action>进行金额为<intended BET>的BET
