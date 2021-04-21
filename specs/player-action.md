@@ -44,7 +44,7 @@
 * 前一名玩家按<BET of previous players>下注
 * 该玩家<status of BET action>进行金额为<intended BET>的BET
 
-### 玩家BET时，金额不能大于当前场上筹码最少玩家的筹码数
+### 玩家BET时，金额不能大于当前场上剩余筹码最少的玩家剩余的筹码数
 
 |minimal counter of current players    |intended BET    |status of BET action  |
 |--------------------------------------|----------------|----------------------|
