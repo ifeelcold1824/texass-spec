@@ -2,14 +2,14 @@
 
 ## 组合出最高价值牌面的玩家将赢得全部筹码
 
-牌面价值排序\
-牌面价值排序参考: [Wikipedia Texas hold 'em - Hand value](https://en.wikipedia.org/wiki/Texas_hold_%27em#Hand_values)
+牌面价值排序如下：\
+牌面价值计算参考: [Wikipedia Texas hold 'em - Hand value](https://en.wikipedia.org/wiki/Texas_hold_%27em#Hand_values)
 
 |player1    |player2    |player3    |winner     |
 |-----------|-----------|-----------|-----------|
 |3          |2          |1          |player3    |
 
-下注金额
+所有玩家在每轮的下注金额如下：
 
 |1st-round  |2nd-round  |3rd-round  |4th-round  |winner takes  |
 |-----------|-----------|-----------|-----------|--------------|
