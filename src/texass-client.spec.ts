@@ -1,6 +1,6 @@
 import { TexassClient } from './texass-client';
 import { Player } from './player.interface';
-import { ERROR_MSG } from './constant';
+import { ERROR_MSG, Round } from './constant';
 
 describe('Texass-client test', () => {
   describe('init game', () => {
@@ -9,6 +9,7 @@ describe('Texass-client test', () => {
       const client = new TexassClient(players);
       expect(client).toBeDefined();
       expect(client.players).toEqual(players);
+      expect(client.round).toEqual(Round.PRE_FLOP);
     });
 
     it('should thrown error given player less than 2', () => {
