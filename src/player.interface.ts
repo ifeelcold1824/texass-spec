@@ -1,1 +1,3 @@
-export interface Player {}
+export class Player {
+  balance: number;
+}
