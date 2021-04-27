@@ -1,5 +1,6 @@
 export const ERROR_MSG = {
-  GAME_OVER: 'Game over',
+  GAME_OVER: 'GAME_OVER',
+  INVALID_ACTION: 'INVALID_ACTION',
 };
 
 export enum TexassRound {

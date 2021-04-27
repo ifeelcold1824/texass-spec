@@ -1,29 +1,51 @@
-import { Player } from './player';
+import { Player, PlayerId } from './player';
 import { ERROR_MSG, TexassRound } from './constant';
 import { ActionType } from './ActionType';
 
 export interface TexassClientStatus {
   gameOver: boolean;
   round: TexassRound;
-  waitingPlayers: Player[];
-  actedPlayers: Player[];
-  actionPlayer: Player;
-  remainingPlayers: Player[];
+  waitingPlayers: PlayerId[];
+  actedPlayers: PlayerId[];
+  actionPlayer: PlayerId;
+  remainingPlayers: PlayerId[];
+  players: Player[];
+  availableActions: ActionType[];
+  pool: Map<TexassRound, Map<PlayerId, number>>;
 }
 
+export interface TexassClientSettings {
+  bigBlind: number;
+  smallBlind: number;
+}
+
+export const defaultSetting = {
+  bigBlind: 20,
+  smallBlind: 10,
+};
+
 export class TexassClient {
-  constructor(readonly status: TexassClientStatus) {}
+  constructor(
+    readonly status: TexassClientStatus,
+    private readonly settings: TexassClientSettings = defaultSetting,
+  ) {}
 
   activePlayerAction(action: ActionType, amount?: number) {
     if (this.status.gameOver) {
       throw Error(ERROR_MSG.GAME_OVER);
     }
 
+    if (!this.status.availableActions.includes(action)) {
+      throw Error(ERROR_MSG.INVALID_ACTION);
+    }
+
     switch (action) {
       case ActionType.FOLD:
         this.status.remainingPlayers = this.status.remainingPlayers.filter(
-          (i) => i.id != this.status.actionPlayer.id,
+          (i) => i != this.status.actionPlayer,
         );
+        break;
+      case ActionType.BET:
         break;
       case ActionType.CALL:
         this.status.actedPlayers.push(this.status.actionPlayer);

@@ -1,4 +1,7 @@
 export interface Player {
-  id: string;
+  id: PlayerId;
   balance: number;
+  blindBet?: number;
 }
+
+export type PlayerId = string;
