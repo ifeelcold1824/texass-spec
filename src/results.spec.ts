@@ -13,7 +13,7 @@ describe('results test', () => {
     playerB = buildMockPlayer('b', 100, 20, false);
     playerC = buildMockPlayer('c');
   });
-  it('winner takes all', () => {
+  it('should return correct result given status and hand value', () => {
     const status = {
       gameOver: true,
       players: new Map([
