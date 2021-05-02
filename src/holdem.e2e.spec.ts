@@ -17,7 +17,7 @@ describe('Texass-client test', () => {
   it('game should proceed as expected', () => {
     const client = Holdem.initFromPlayers(playerA, playerB, playerC);
     expect(client.status.round).toEqual(TexassRound.PRE_FLOP);
-    expect(client.actionPlayer).toEqual('a');
+    expect(client.actionPlayer.id).toEqual('a');
 
     // A small blind
     client.action('a', ActionType.CALL);

@@ -4,7 +4,7 @@ import { ActionType, ERROR_MSG, TexassRound } from './constant';
 export interface TexassClientStatus {
   gameOver: boolean;
   round: TexassRound;
-  waitingPlayers: PlayerId[];
+  waitingPlayers: Player[];
   players: Map<PlayerId, Player>;
   pool: Map<TexassRound, Map<PlayerId, number>>;
   currentBet: number;
@@ -17,7 +17,7 @@ export class Holdem {
     const status: TexassClientStatus = {
       gameOver: false,
       round: TexassRound.PRE_FLOP,
-      waitingPlayers: players.map(({ id }) => id),
+      waitingPlayers: [...players],
       players: new Map(players.map((player) => [player.id, player])),
       pool: Holdem.initPool(players),
       currentBet: 0,
@@ -34,7 +34,7 @@ export class Holdem {
       throw Error(ERROR_MSG.GAME_OVER);
     }
 
-    if (this.status.waitingPlayers[0] != playerId) {
+    if (this.status.waitingPlayers[0].id != playerId) {
       throw Error(ERROR_MSG.NOT_YOUR_TURN);
     }
 
@@ -46,7 +46,7 @@ export class Holdem {
         player.status = 'OUT';
         break;
       case ActionType.CHECK:
-        this.status.waitingPlayers.push(player.id);
+        this.status.waitingPlayers.push(player);
         this.amendPayAndUpdatePool(player, 0);
         break;
       case ActionType.CALL:
@@ -64,7 +64,7 @@ export class Holdem {
         }
         this.amendPayAndUpdatePool(player, callAmount);
         this.updateCurrentBetAndRotate(callAmount);
-        this.status.waitingPlayers.push(player.id);
+        this.status.waitingPlayers.push(player);
         break;
       case ActionType.RAISE:
         if (typeof amount != 'number' || amount <= this.status.currentBet) {
@@ -72,7 +72,7 @@ export class Holdem {
         }
         this.amendPayAndUpdatePool(player, amount);
         this.updateCurrentBetAndRotate(amount);
-        this.status.waitingPlayers.push(player.id);
+        this.status.waitingPlayers.push(player);
         break;
       case ActionType.ALL_IN:
         const allinAmount =
@@ -86,7 +86,9 @@ export class Holdem {
 
     if (
       Array.from(this.status.pool.get(this.status.round).entries())
-        .filter(([player]) => this.status.waitingPlayers.includes(player))
+        .filter(([player]) =>
+          this.status.waitingPlayers.map((it) => it.id).includes(player),
+        )
         .filter(([, bet]) => bet < this.status.currentBet || !bet).length === 0
     ) {
       this.switchRound();
@@ -131,9 +133,9 @@ export class Holdem {
   }
 
   private refreshStatusOnRoundChange() {
-    this.status.waitingPlayers = Array.from(this.status.players.values())
-      .filter((it) => it.status === 'ACTIVE')
-      .map((it) => it.id);
+    this.status.waitingPlayers = Array.from(
+      this.status.players.values(),
+    ).filter((it) => it.status === 'ACTIVE');
     this.status.currentBet = 0;
   }
 
