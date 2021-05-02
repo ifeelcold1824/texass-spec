@@ -59,7 +59,7 @@ export class Holdem {
           }
         }
         this.amendPayAndUpdatePool(player, callAmount);
-        this.updateCurrentBetAndRotate(callAmount);
+        this.updateCurrentBet(callAmount);
         this.status.waitingPlayers.push(player);
         break;
       case ActionType.RAISE:
@@ -67,7 +67,7 @@ export class Holdem {
           throw Error(ERROR_MSG.INVALID_BET_AMOUNT);
         }
         this.amendPayAndUpdatePool(player, amount);
-        this.updateCurrentBetAndRotate(amount);
+        this.updateCurrentBet(amount);
         this.status.waitingPlayers.push(player);
         break;
       case ActionType.ALL_IN:
@@ -75,7 +75,7 @@ export class Holdem {
           this.status.pool.get(this.status.round).get(player.id) +
           player.balance;
         this.amendPayAndUpdatePool(player, allinAmount);
-        this.updateCurrentBetAndRotate(allinAmount);
+        this.updateCurrentBet(allinAmount);
         player.status = 'ALLIN';
         break;
     }
@@ -93,7 +93,7 @@ export class Holdem {
     return this.status;
   }
 
-  private updateCurrentBetAndRotate(newBet: number) {
+  private updateCurrentBet(newBet: number) {
     if (newBet > this.status.currentBet) {
       this.status.currentBet = newBet;
     }
@@ -107,13 +107,7 @@ export class Holdem {
 
   private checkGameOver() {
     const playerLeftLessThan1 = this.status.waitingPlayers.length <= 1;
-
-    const AllPlayersAllin =
-      Array.from(this.status.players.values()).filter(
-        (it) => it.status !== 'ALLIN',
-      ).length === 0;
-
-    if (playerLeftLessThan1 || AllPlayersAllin) {
+    if (playerLeftLessThan1) {
       this.status.gameOver = true;
     }
   }
