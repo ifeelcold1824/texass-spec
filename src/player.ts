@@ -6,6 +6,10 @@ export class Player {
   blindBet?: number;
   isAllin?: boolean;
 
+  constructor(id: PlayerId) {
+    this.id = id;
+  }
+
   pay(amount: number) {
     if (this.balance < amount) {
       throw Error(ERROR_MSG.GAME_OVER);

@@ -18,7 +18,7 @@ export interface TexassClientStatus {
 export class Holdem {
   constructor(readonly status: TexassClientStatus) {}
 
-  static initFromPlayers(players: Player[]) {
+  static initFromPlayers(...players: Player[]) {
     const splitPlayers: Player[] = [...players];
     const firstPlayer = splitPlayers.shift();
     const status: TexassClientStatus = {
@@ -41,6 +41,10 @@ export class Holdem {
       currentBet: 0,
     };
     return new Holdem(status);
+  }
+
+  get actionPlayer() {
+    return this.status.actionPlayer;
   }
 
   action(playerId: PlayerId, action: ActionType, amount?: number) {

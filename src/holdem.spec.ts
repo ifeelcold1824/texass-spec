@@ -14,9 +14,10 @@ describe('Texass-client test', () => {
   });
 
   describe('init game', () => {
-    it('should be created given status', () => {
-      const client = new Holdem({} as TexassClientStatus);
+    it('first player should be action player when init game', () => {
+      const client = Holdem.initFromPlayers(new Player('a'));
       expect(client).toBeDefined();
+      expect(client.actionPlayer).toEqual('a');
     });
   });
 
@@ -118,8 +119,7 @@ describe('Texass-client test', () => {
     blindBet = undefined,
     isAllin = undefined,
   ) => {
-    const player = new Player();
-    player.id = id;
+    const player = new Player(id);
     player.balance = balance;
     player.blindBet = blindBet;
     player.isAllin = isAllin;
