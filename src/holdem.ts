@@ -29,17 +29,13 @@ export class Holdem {
     return this.status.waitingPlayers[0];
   }
 
-  action(playerId: PlayerId, action: ActionType, amount?: number) {
+  action(action: ActionType, amount?: number) {
     if (this.status.gameOver) {
       throw Error(ERROR_MSG.GAME_OVER);
     }
 
-    if (this.status.waitingPlayers[0].id != playerId) {
-      throw Error(ERROR_MSG.NOT_YOUR_TURN);
-    }
-
+    const player = this.actionPlayer;
     this.status.waitingPlayers.shift();
-    const player = this.status.players.get(playerId);
 
     switch (action) {
       case ActionType.FOLD:
@@ -117,7 +113,6 @@ export class Holdem {
         (it) => it.status !== 'ALLIN',
       ).length === 0;
 
-    // this.status.allinPlayers.length === this.status.players.size;
     if (playerLeftLessThan1 || AllPlayersAllin) {
       this.status.gameOver = true;
     }

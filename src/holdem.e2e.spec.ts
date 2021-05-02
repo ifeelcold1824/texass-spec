@@ -20,28 +20,28 @@ describe('Texass-client test', () => {
     expect(client.actionPlayer.id).toEqual('a');
 
     // A small blind
-    client.action('a', ActionType.CALL);
+    client.action(ActionType.CALL);
     // B big blind
-    client.action('b', ActionType.CALL);
+    client.action(ActionType.CALL);
     // C call
-    client.action('c', ActionType.CALL);
+    client.action(ActionType.CALL);
     // A call
-    client.action('a', ActionType.CALL);
+    client.action(ActionType.CALL);
     expect(client.status.round).toEqual(TexassRound.FLOP);
 
-    client.action('a', ActionType.ALL_IN);
-    client.action('b', ActionType.CALL);
-    client.action('c', ActionType.CALL);
+    client.action(ActionType.ALL_IN);
+    client.action(ActionType.CALL);
+    client.action(ActionType.CALL);
     expect(client.status.round).toEqual(TexassRound.TURN);
 
-    client.action('b', ActionType.CALL, 10);
-    client.action('c', ActionType.RAISE, 20);
-    client.action('b', ActionType.CALL);
+    client.action(ActionType.CALL, 10);
+    client.action(ActionType.RAISE, 20);
+    client.action(ActionType.CALL);
     expect(client.status.round).toEqual(TexassRound.RIVER);
 
-    client.action('b', ActionType.CHECK);
-    client.action('c', ActionType.CALL, 10);
-    client.action('b', ActionType.CALL);
+    client.action(ActionType.CHECK);
+    client.action(ActionType.CALL, 10);
+    client.action(ActionType.CALL);
     expect(client.status.gameOver).toBeTruthy();
     const handValue = new Map([
       ['a', 2],
