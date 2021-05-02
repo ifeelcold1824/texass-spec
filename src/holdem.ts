@@ -5,12 +5,9 @@ export interface TexassClientStatus {
   gameOver: boolean;
   round: TexassRound;
   waitingPlayers: PlayerId[];
-  actedPlayers: PlayerId[];
-  actionPlayer: PlayerId;
   exitPlayers: PlayerId[];
   allinPlayers: PlayerId[];
   players: Map<PlayerId, Player>;
-  availableActions: Map<ActionType, boolean>;
   pool: Map<TexassRound, Map<PlayerId, number>>;
   currentBet: number;
 }
@@ -19,24 +16,13 @@ export class Holdem {
   constructor(readonly status: TexassClientStatus) {}
 
   static initFromPlayers(...players: Player[]) {
-    const splitPlayers: Player[] = [...players];
-    const firstPlayer = splitPlayers.shift();
     const status: TexassClientStatus = {
       gameOver: false,
       round: TexassRound.PRE_FLOP,
-      waitingPlayers: splitPlayers.map(({ id }) => id),
-      actedPlayers: [],
-      actionPlayer: firstPlayer.id,
+      waitingPlayers: players.map(({ id }) => id),
       exitPlayers: [],
       allinPlayers: [],
       players: new Map(players.map((player) => [player.id, player])),
-      availableActions: Holdem.buildAvailableActions(
-        false,
-        false,
-        true,
-        false,
-        false,
-      ),
       pool: Holdem.initPool(players),
       currentBet: 0,
     };
@@ -44,7 +30,7 @@ export class Holdem {
   }
 
   get actionPlayer() {
-    return this.status.actionPlayer;
+    return this.status.waitingPlayers[0];
   }
 
   action(playerId: PlayerId, action: ActionType, amount?: number) {
@@ -52,13 +38,11 @@ export class Holdem {
       throw Error(ERROR_MSG.GAME_OVER);
     }
 
-    if (this.status.actionPlayer != playerId) {
+    if (this.status.waitingPlayers[0] != playerId) {
       throw Error(ERROR_MSG.NOT_YOUR_TURN);
     }
 
-    if (!this.status.availableActions.get(action)) {
-      throw Error(ERROR_MSG.INVALID_ACTION);
-    }
+    this.status.waitingPlayers.shift();
     const player = this.status.players.get(playerId);
 
     switch (action) {
@@ -66,7 +50,8 @@ export class Holdem {
         this.status.exitPlayers.push(player.id);
         break;
       case ActionType.CHECK:
-        this.status.actedPlayers.push(player.id);
+        this.status.waitingPlayers.push(player.id);
+        this.amendPayAndUpdatePool(player, 0);
         break;
       case ActionType.CALL:
         let callAmount = this.status.currentBet;
@@ -83,7 +68,7 @@ export class Holdem {
         }
         this.amendPayAndUpdatePool(player, callAmount);
         this.updateCurrentBetAndRotate(callAmount);
-        this.status.actedPlayers.push(player.id);
+        this.status.waitingPlayers.push(player.id);
         break;
       case ActionType.RAISE:
         if (typeof amount != 'number' || amount <= this.status.currentBet) {
@@ -91,7 +76,7 @@ export class Holdem {
         }
         this.amendPayAndUpdatePool(player, amount);
         this.updateCurrentBetAndRotate(amount);
-        this.status.actedPlayers.push(player.id);
+        this.status.waitingPlayers.push(player.id);
         break;
       case ActionType.ALL_IN:
         const allinAmount =
@@ -103,12 +88,11 @@ export class Holdem {
         break;
     }
 
-    this.status.actionPlayer = this.status.waitingPlayers.shift();
-    if (this.status.actionPlayer) {
-      this.refreshAvailableActions(
-        this.status.players.get(this.status.actionPlayer),
-      );
-    } else {
+    if (
+      Array.from(this.status.pool.get(this.status.round).entries())
+        .filter(([player]) => this.status.waitingPlayers.includes(player))
+        .filter(([, bet]) => bet < this.status.currentBet || !bet).length === 0
+    ) {
       this.switchRound();
     }
     this.checkGameOver();
@@ -117,32 +101,7 @@ export class Holdem {
 
   private updateCurrentBetAndRotate(newBet: number) {
     if (newBet > this.status.currentBet) {
-      this.status.waitingPlayers = [
-        ...this.status.waitingPlayers,
-        ...this.status.actedPlayers,
-      ];
-      this.status.actedPlayers = [];
       this.status.currentBet = newBet;
-    }
-  }
-
-  private refreshAvailableActions(player: Player) {
-    if (player.blindBet) {
-      this.status.availableActions = Holdem.buildAvailableActions(
-        false,
-        false,
-        true,
-        false,
-        false,
-      );
-    } else {
-      this.status.availableActions = Holdem.buildAvailableActions(
-        true,
-        this.status.currentBet === 0,
-        player.balance > this.status.currentBet,
-        player.balance > this.status.currentBet,
-        true,
-      );
     }
   }
 
@@ -153,8 +112,7 @@ export class Holdem {
   }
 
   private checkGameOver() {
-    const playerLeftLessThan1 =
-      this.status.players.size - this.status.exitPlayers.length <= 1;
+    const playerLeftLessThan1 = this.status.waitingPlayers.length <= 1;
 
     const AllPlayersAllin =
       this.status.allinPlayers.length === this.status.players.size;
@@ -172,37 +130,15 @@ export class Holdem {
     }
   }
 
-  private refreshStatusOnRoundChange() {
-    const remainingPlayers = Array.from(this.status.players, (item) => item[0])
+  get remainingPlayers() {
+    return Array.from(this.status.players, (item) => item[0])
       .filter((p) => !this.status.exitPlayers.includes(p))
       .filter((p) => !this.status.allinPlayers.includes(p));
-    this.status.actionPlayer = remainingPlayers.shift();
-    this.status.waitingPlayers = remainingPlayers;
-    this.status.actedPlayers = [];
-    this.status.currentBet = 0;
-    this.status.availableActions = Holdem.buildAvailableActions(
-      true,
-      true,
-      true,
-      false,
-      true,
-    );
   }
 
-  private static buildAvailableActions(
-    canFold: boolean,
-    canCheck: boolean,
-    canCall: boolean,
-    canRaise: boolean,
-    canAllin: boolean,
-  ) {
-    return new Map([
-      [ActionType.FOLD, canFold],
-      [ActionType.CHECK, canCheck],
-      [ActionType.CALL, canCall],
-      [ActionType.RAISE, canRaise],
-      [ActionType.ALL_IN, canAllin],
-    ]);
+  private refreshStatusOnRoundChange() {
+    this.status.waitingPlayers = this.remainingPlayers;
+    this.status.currentBet = 0;
   }
 
   private static initPool(players: Player[]) {
@@ -215,7 +151,7 @@ export class Holdem {
     return new Map(
       rounds.map((round) => [
         round,
-        new Map(players.map((player) => [player.id, 0])),
+        new Map(players.map((player) => [player.id, null])),
       ]),
     );
   }

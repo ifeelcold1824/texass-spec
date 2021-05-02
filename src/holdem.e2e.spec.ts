@@ -15,9 +15,9 @@ describe('Texass-client test', () => {
   });
 
   it('game should proceed as expected', () => {
-    const client = Holdem.initFromPlayers([playerA, playerB, playerC]);
+    const client = Holdem.initFromPlayers(playerA, playerB, playerC);
     expect(client.status.round).toEqual(TexassRound.PRE_FLOP);
-    expect(client.status.actionPlayer).toEqual('a');
+    expect(client.actionPlayer).toEqual('a');
 
     // A small blind
     client.action('a', ActionType.CALL);
@@ -64,8 +64,7 @@ describe('Texass-client test', () => {
     blindBet = undefined,
     isAllin = undefined,
   ) => {
-    const player = new Player();
-    player.id = id;
+    const player = new Player(id);
     player.balance = balance;
     player.blindBet = blindBet;
     player.isAllin = isAllin;
