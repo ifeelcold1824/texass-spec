@@ -50,10 +50,10 @@ export class Holdem {
         this.waitingPlayers.push(player);
         break;
       case ActionType.RAISE:
-        if (typeof amount != 'number' || amount <= this.currentBet) {
+        if (typeof amount != 'number' || amount < 0) {
           throw Error(ERROR_MSG.INVALID_BET_AMOUNT);
         }
-        bet = amount;
+        bet = amount + this.currentBet;
         this.waitingPlayers.push(player);
         break;
       case ActionType.ALL_IN:

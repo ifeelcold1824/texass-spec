@@ -35,7 +35,7 @@ describe('Texass-client test', () => {
     expect(client.round).toEqual(TexassRound.TURN);
 
     client.action(ActionType.CALL, 10);
-    client.action(ActionType.RAISE, 20);
+    client.action(ActionType.RAISE, 10);
     client.action(ActionType.CALL);
     expect(client.round).toEqual(TexassRound.RIVER);
 
