@@ -5,9 +5,11 @@ export class Player {
   balance: number;
   blindBet?: number;
   isAllin?: boolean;
+  status: PlayerStatus;
 
-  constructor(id: PlayerId) {
+  constructor(id: PlayerId, status: PlayerStatus = 'ACTIVE') {
     this.id = id;
+    this.status = status;
   }
 
   pay(amount: number) {
@@ -18,4 +20,5 @@ export class Player {
   }
 }
 
+export type PlayerStatus = 'ACTIVE' | 'ALLIN' | 'OUT';
 export type PlayerId = string;

@@ -5,8 +5,6 @@ export interface TexassClientStatus {
   gameOver: boolean;
   round: TexassRound;
   waitingPlayers: PlayerId[];
-  exitPlayers: PlayerId[];
-  allinPlayers: PlayerId[];
   players: Map<PlayerId, Player>;
   pool: Map<TexassRound, Map<PlayerId, number>>;
   currentBet: number;
@@ -20,8 +18,6 @@ export class Holdem {
       gameOver: false,
       round: TexassRound.PRE_FLOP,
       waitingPlayers: players.map(({ id }) => id),
-      exitPlayers: [],
-      allinPlayers: [],
       players: new Map(players.map((player) => [player.id, player])),
       pool: Holdem.initPool(players),
       currentBet: 0,
@@ -47,7 +43,7 @@ export class Holdem {
 
     switch (action) {
       case ActionType.FOLD:
-        this.status.exitPlayers.push(player.id);
+        player.status = 'OUT';
         break;
       case ActionType.CHECK:
         this.status.waitingPlayers.push(player.id);
@@ -84,7 +80,7 @@ export class Holdem {
           player.balance;
         this.amendPayAndUpdatePool(player, allinAmount);
         this.updateCurrentBetAndRotate(allinAmount);
-        this.status.allinPlayers.push(player.id);
+        player.status = 'ALLIN';
         break;
     }
 
@@ -115,7 +111,11 @@ export class Holdem {
     const playerLeftLessThan1 = this.status.waitingPlayers.length <= 1;
 
     const AllPlayersAllin =
-      this.status.allinPlayers.length === this.status.players.size;
+      Array.from(this.status.players.values()).filter(
+        (it) => it.status !== 'ALLIN',
+      ).length === 0;
+
+    // this.status.allinPlayers.length === this.status.players.size;
     if (playerLeftLessThan1 || AllPlayersAllin) {
       this.status.gameOver = true;
     }
@@ -130,14 +130,10 @@ export class Holdem {
     }
   }
 
-  get remainingPlayers() {
-    return Array.from(this.status.players, (item) => item[0])
-      .filter((p) => !this.status.exitPlayers.includes(p))
-      .filter((p) => !this.status.allinPlayers.includes(p));
-  }
-
   private refreshStatusOnRoundChange() {
-    this.status.waitingPlayers = this.remainingPlayers;
+    this.status.waitingPlayers = Array.from(this.status.players.values())
+      .filter((it) => it.status === 'ACTIVE')
+      .map((it) => it.id);
     this.status.currentBet = 0;
   }
 
