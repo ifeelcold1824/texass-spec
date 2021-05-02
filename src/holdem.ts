@@ -65,14 +65,14 @@ export class Holdem {
     this.amendPayAndUpdatePool(player, bet);
     this.updateCurrentBet(bet);
 
-    if (this.roundOver()) {
+    if (this.roundOver) {
       this.switchRound();
     }
     this.checkGameOver();
     return this;
   }
 
-  private roundOver() {
+  private get roundOver() {
     return (
       Array.from(this.pool.get(this.round).entries())
         .filter(([player]) =>
@@ -95,10 +95,7 @@ export class Holdem {
   }
 
   private checkGameOver() {
-    const playerLeftLessThan1 = this.waitingPlayers.length <= 1;
-    if (playerLeftLessThan1) {
-      this.gameOver = true;
-    }
+    this.gameOver = this.waitingPlayers.length <= 1;
   }
 
   private switchRound() {
