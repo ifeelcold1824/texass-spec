@@ -1,4 +1,4 @@
-import { TexassClient, TexassClientStatus } from './texass-client';
+import { Holdem, TexassClientStatus } from './holdem';
 import { ActionType, ERROR_MSG, TexassRound } from './constant';
 import { Player } from './player';
 
@@ -15,20 +15,21 @@ describe('Texass-client test', () => {
 
   describe('init game', () => {
     it('should be created given status', () => {
-      const client = new TexassClient({} as TexassClientStatus);
+      const client = new Holdem({} as TexassClientStatus);
       expect(client).toBeDefined();
     });
   });
 
   describe('end game', () => {
     it('should game over after RIVER round', () => {
-      const client = new TexassClient({
+      const client = new Holdem({
         gameOver: false,
         round: TexassRound.RIVER,
         actionPlayer: playerA.id,
         waitingPlayers: [],
         exitPlayers: [],
         actedPlayers: [playerB.id, playerC.id],
+        allinPlayers: [],
         players: new Map([
           [playerA.id, playerA],
           [playerB.id, playerB],
@@ -41,13 +42,14 @@ describe('Texass-client test', () => {
     });
 
     it('should game over when less than 1 player left', () => {
-      const client = new TexassClient({
+      const client = new Holdem({
         gameOver: false,
         round: TexassRound.PRE_FLOP,
         actionPlayer: playerA.id,
         waitingPlayers: [],
         exitPlayers: [],
         actedPlayers: [playerB.id],
+        allinPlayers: [],
         players: new Map([
           [playerA.id, playerA],
           [playerB.id, playerB],
@@ -59,7 +61,7 @@ describe('Texass-client test', () => {
     });
 
     it('players can not take action when game over', () => {
-      const client = new TexassClient({
+      const client = new Holdem({
         gameOver: true,
       } as TexassClientStatus);
       expect(() => {
@@ -70,12 +72,13 @@ describe('Texass-client test', () => {
 
   describe('round', () => {
     it('should move to next round when no active player left after action', () => {
-      const client = new TexassClient({
+      const client = new Holdem({
         round: TexassRound.PRE_FLOP,
         actionPlayer: playerA.id,
         waitingPlayers: [],
         exitPlayers: [],
         actedPlayers: [playerB.id, playerC.id],
+        allinPlayers: [],
         players: new Map([
           [playerA.id, playerA],
           [playerB.id, playerB],
@@ -90,7 +93,7 @@ describe('Texass-client test', () => {
 
   describe('action', () => {
     it('should throw error when action is not in availableActions', () => {
-      const client = new TexassClient({
+      const client = new Holdem({
         round: TexassRound.PRE_FLOP,
         actionPlayer: playerA.id,
         waitingPlayers: [],

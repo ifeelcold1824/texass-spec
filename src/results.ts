@@ -1,4 +1,4 @@
-import { TexassClientStatus } from './texass-client';
+import { TexassClientStatus } from './holdem';
 import { ERROR_MSG } from './constant';
 import { PlayerId } from './player';
 

@@ -1,4 +1,4 @@
-import { TexassClient } from './texass-client';
+import { Holdem } from './holdem';
 import { Player } from './player';
 import { ActionType, TexassRound } from './constant';
 import { resultsCalculator } from './results';
@@ -15,7 +15,7 @@ describe('Texass-client test', () => {
   });
 
   it('game should proceed as expected', () => {
-    const client = TexassClient.initFromPlayers([playerA, playerB, playerC]);
+    const client = Holdem.initFromPlayers([playerA, playerB, playerC]);
     expect(client.status.round).toEqual(TexassRound.PRE_FLOP);
     expect(client.status.actionPlayer).toEqual('a');
 

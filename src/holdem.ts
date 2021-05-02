@@ -15,7 +15,7 @@ export interface TexassClientStatus {
   currentBet: number;
 }
 
-export class TexassClient {
+export class Holdem {
   constructor(readonly status: TexassClientStatus) {}
 
   static initFromPlayers(players: Player[]) {
@@ -30,17 +30,17 @@ export class TexassClient {
       exitPlayers: [],
       allinPlayers: [],
       players: new Map(players.map((player) => [player.id, player])),
-      availableActions: TexassClient.buildAvailableActions(
+      availableActions: Holdem.buildAvailableActions(
         false,
         false,
         true,
         false,
         false,
       ),
-      pool: TexassClient.initPool(players),
+      pool: Holdem.initPool(players),
       currentBet: 0,
     };
-    return new TexassClient(status);
+    return new Holdem(status);
   }
 
   action(playerId: PlayerId, action: ActionType, amount?: number) {
@@ -124,7 +124,7 @@ export class TexassClient {
 
   private refreshAvailableActions(player: Player) {
     if (player.blindBet) {
-      this.status.availableActions = TexassClient.buildAvailableActions(
+      this.status.availableActions = Holdem.buildAvailableActions(
         false,
         false,
         true,
@@ -132,7 +132,7 @@ export class TexassClient {
         false,
       );
     } else {
-      this.status.availableActions = TexassClient.buildAvailableActions(
+      this.status.availableActions = Holdem.buildAvailableActions(
         true,
         this.status.currentBet === 0,
         player.balance > this.status.currentBet,
@@ -176,7 +176,7 @@ export class TexassClient {
     this.status.waitingPlayers = remainingPlayers;
     this.status.actedPlayers = [];
     this.status.currentBet = 0;
-    this.status.availableActions = TexassClient.buildAvailableActions(
+    this.status.availableActions = Holdem.buildAvailableActions(
       true,
       true,
       true,

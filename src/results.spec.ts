@@ -1,4 +1,4 @@
-import { TexassClientStatus } from './texass-client';
+import { TexassClientStatus } from './holdem';
 import { resultsCalculator } from './results';
 import { Player } from './player';
 import { TexassRound } from './constant';
