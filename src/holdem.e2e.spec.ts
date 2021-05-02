@@ -15,8 +15,8 @@ describe('Texass-client test', () => {
   });
 
   it('game should proceed as expected', () => {
-    const client = Holdem.initFromPlayers(playerA, playerB, playerC);
-    expect(client.status.round).toEqual(TexassRound.PRE_FLOP);
+    const client = new Holdem(playerA, playerB, playerC);
+    expect(client.round).toEqual(TexassRound.PRE_FLOP);
     expect(client.actionPlayer.id).toEqual('a');
 
     // A small blind
@@ -27,29 +27,29 @@ describe('Texass-client test', () => {
     client.action(ActionType.CALL);
     // A call
     client.action(ActionType.CALL);
-    expect(client.status.round).toEqual(TexassRound.FLOP);
+    expect(client.round).toEqual(TexassRound.FLOP);
 
     client.action(ActionType.ALL_IN);
     client.action(ActionType.CALL);
     client.action(ActionType.CALL);
-    expect(client.status.round).toEqual(TexassRound.TURN);
+    expect(client.round).toEqual(TexassRound.TURN);
 
     client.action(ActionType.CALL, 10);
     client.action(ActionType.RAISE, 20);
     client.action(ActionType.CALL);
-    expect(client.status.round).toEqual(TexassRound.RIVER);
+    expect(client.round).toEqual(TexassRound.RIVER);
 
     client.action(ActionType.CHECK);
     client.action(ActionType.CALL, 10);
     client.action(ActionType.CALL);
-    expect(client.status.gameOver).toBeTruthy();
+    expect(client.gameOver).toBeTruthy();
     const handValue = new Map([
       ['a', 2],
       ['b', 2],
       ['c', 3],
     ]);
 
-    expect(resultsCalculator(client.status, handValue)).toEqual(
+    expect(resultsCalculator(client, handValue)).toEqual(
       new Map([
         ['a', 0],
         ['b', 0],
