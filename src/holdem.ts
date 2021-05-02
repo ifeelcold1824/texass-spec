@@ -23,62 +23,63 @@ export class Holdem {
       throw Error(ERROR_MSG.GAME_OVER);
     }
 
-    const player = this.actionPlayer;
-    this.waitingPlayers.shift();
+    const player = this.waitingPlayers.shift();
+    let bet: number = this.currentBet;
 
     switch (action) {
       case ActionType.FOLD:
+        bet = 0;
         player.status = 'OUT';
         break;
       case ActionType.CHECK:
+        bet = 0;
         this.waitingPlayers.push(player);
-        this.amendPayAndUpdatePool(player, 0);
         break;
       case ActionType.CALL:
-        let callAmount = this.currentBet;
         if (player.blindBet) {
-          callAmount = player.blindBet;
+          bet = player.blindBet;
           delete player.blindBet;
         } else {
           if (this.currentBet === 0) {
             if (amount < 0) {
               throw new Error(ERROR_MSG.INVALID_BET_AMOUNT);
             }
-            callAmount = amount;
+            bet = amount;
           }
         }
-        this.amendPayAndUpdatePool(player, callAmount);
-        this.updateCurrentBet(callAmount);
         this.waitingPlayers.push(player);
         break;
       case ActionType.RAISE:
         if (typeof amount != 'number' || amount <= this.currentBet) {
           throw Error(ERROR_MSG.INVALID_BET_AMOUNT);
         }
-        this.amendPayAndUpdatePool(player, amount);
-        this.updateCurrentBet(amount);
+        bet = amount;
         this.waitingPlayers.push(player);
         break;
       case ActionType.ALL_IN:
-        const allinAmount =
-          this.pool.get(this.round).get(player.id) + player.balance;
-        this.amendPayAndUpdatePool(player, allinAmount);
-        this.updateCurrentBet(allinAmount);
+        bet = this.pool.get(this.round).get(player.id) + player.balance;
         player.status = 'ALLIN';
         break;
     }
 
-    if (
+    this.amendPayAndUpdatePool(player, bet);
+    this.updateCurrentBet(bet);
+
+    if (this.roundOver()) {
+      this.switchRound();
+    }
+    this.checkGameOver();
+    return this;
+  }
+
+  private roundOver() {
+    return (
       Array.from(this.pool.get(this.round).entries())
         .filter(([player]) =>
           this.waitingPlayers.map((it) => it.id).includes(player),
         )
         .filter(([, bet]) => bet < this.currentBet || !bet).length === 0
-    ) {
-      this.switchRound();
-    }
-    this.checkGameOver();
-    return this;
+    );
   }
 
   private updateCurrentBet(newBet: number) {
