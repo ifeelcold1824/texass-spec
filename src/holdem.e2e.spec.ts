@@ -1,6 +1,6 @@
 import { Holdem } from './holdem';
 import { Player } from './player';
-import { ActionType, TexassRound } from './constant';
+import { ActionType, HoldemRound } from './constant';
 import { resultsCalculator } from './results';
 
 describe('Texass-client test', () => {
@@ -16,7 +16,7 @@ describe('Texass-client test', () => {
 
   it('game should proceed as expected', () => {
     const client = new Holdem(playerA, playerB, playerC);
-    expect(client.round).toEqual(TexassRound.PRE_FLOP);
+    expect(client.round).toEqual(HoldemRound.PRE_FLOP);
     expect(client.actionPlayer.id).toEqual('a');
 
     // A small blind
@@ -27,17 +27,17 @@ describe('Texass-client test', () => {
     client.action(ActionType.CALL);
     // A call
     client.action(ActionType.CALL);
-    expect(client.round).toEqual(TexassRound.FLOP);
+    expect(client.round).toEqual(HoldemRound.FLOP);
 
     client.action(ActionType.ALL_IN);
     client.action(ActionType.CALL);
     client.action(ActionType.CALL);
-    expect(client.round).toEqual(TexassRound.TURN);
+    expect(client.round).toEqual(HoldemRound.TURN);
 
     client.action(ActionType.CALL, 10);
     client.action(ActionType.RAISE, 10);
     client.action(ActionType.CALL);
-    expect(client.round).toEqual(TexassRound.RIVER);
+    expect(client.round).toEqual(HoldemRound.RIVER);
 
     client.action(ActionType.CHECK);
     client.action(ActionType.CALL, 10);

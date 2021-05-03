@@ -1,11 +1,11 @@
 import { resultsCalculator } from './results';
-import { TexassRound } from './constant';
+import { HoldemRound } from './constant';
 
 describe('results test', () => {
   it('should return correct result given status and hand value', () => {
     const pool = new Map([
       [
-        TexassRound.PRE_FLOP,
+        HoldemRound.PRE_FLOP,
         new Map([
           ['a', 1],
           ['b', 1],
@@ -13,7 +13,7 @@ describe('results test', () => {
         ]),
       ],
       [
-        TexassRound.FLOP,
+        HoldemRound.FLOP,
         new Map([
           ['a', 2],
           ['b', 2],
@@ -21,7 +21,7 @@ describe('results test', () => {
         ]),
       ],
       [
-        TexassRound.TURN,
+        HoldemRound.TURN,
         new Map([
           ['a', 3],
           ['b', 3],
@@ -29,7 +29,7 @@ describe('results test', () => {
         ]),
       ],
       [
-        TexassRound.RIVER,
+        HoldemRound.RIVER,
         new Map([
           ['a', 4],
           ['b', 4],

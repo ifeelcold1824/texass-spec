@@ -1,12 +1,12 @@
 import { Player, PlayerId } from './player';
-import { ActionType, ERROR_MSG, TexassRound } from './constant';
+import { ActionType, ERROR_MSG, HoldemRound } from './constant';
 
 export class Holdem {
   gameOver = false;
-  round: TexassRound = TexassRound.PRE_FLOP;
+  round: HoldemRound = HoldemRound.PRE_FLOP;
   waitingPlayers: Player[];
   players: Player[];
-  pool: Map<TexassRound, Map<PlayerId, number>> = new Map();
+  pool: Map<HoldemRound, Map<PlayerId, number>> = new Map();
   currentBet = 0;
 
   constructor(...players: Player[]) {

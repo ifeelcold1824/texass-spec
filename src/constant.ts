@@ -7,7 +7,7 @@ export const ERROR_MSG = {
   GAME_IS_RUNNING: 'GAME_IS_RUNNING',
 };
 
-export enum TexassRound {
+export enum HoldemRound {
   PRE_FLOP = 1,
   FLOP = 2,
   TURN = 3,

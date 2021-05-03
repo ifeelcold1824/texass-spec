@@ -1,9 +1,9 @@
 import { PlayerId } from './player';
-import { TexassRound } from './constant';
+import { HoldemRound } from './constant';
 
 export const resultsCalculator = (
   handValues: Map<PlayerId, number>,
-  pool: Map<TexassRound, Map<PlayerId, number>>,
+  pool: Map<HoldemRound, Map<PlayerId, number>>,
 ) => {
   const flatPool = buildFlatPool(pool);
   const splitPool = buildSplitPool(flatPool);
@@ -59,7 +59,7 @@ const buildSplitPool = (flatPool: Map<PlayerId, number>) => {
   return splitPool;
 };
 
-const buildFlatPool = (pool: Map<TexassRound, Map<PlayerId, number>>) => {
+const buildFlatPool = (pool: Map<HoldemRound, Map<PlayerId, number>>) => {
   const flatPool = new Map<PlayerId, number>();
   pool.forEach((roundPool) => {
     roundPool.forEach((value, player) => {
