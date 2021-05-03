@@ -49,7 +49,7 @@ describe('Texass-client test', () => {
       ['c', 3],
     ]);
 
-    expect(resultsCalculator(client, handValue)).toEqual(
+    expect(resultsCalculator(handValue, client.pool)).toEqual(
       new Map([
         ['a', 0],
         ['b', 0],

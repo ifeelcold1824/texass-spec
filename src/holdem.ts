@@ -5,12 +5,12 @@ export class Holdem {
   gameOver = false;
   round: TexassRound = TexassRound.PRE_FLOP;
   waitingPlayers: Player[];
-  players: Map<PlayerId, Player>;
+  players: Player[];
   pool: Map<TexassRound, Map<PlayerId, number>> = new Map();
   currentBet = 0;
 
   constructor(...players: Player[]) {
-    this.players = new Map(players.map((player) => [player.id, player]));
+    this.players = players;
     this.initRound();
   }
 
@@ -65,10 +65,10 @@ export class Holdem {
     this.amendPayAndUpdatePool(player, bet);
     this.updateCurrentBet(bet);
 
+    this.checkGameOver();
     if (this.roundOver) {
       this.switchRound();
     }
-    this.checkGameOver();
     return this;
   }
 
@@ -108,9 +108,7 @@ export class Holdem {
   }
 
   private initRound() {
-    this.waitingPlayers = Array.from(this.players.values()).filter(
-      (it) => it.status === 'ACTIVE',
-    );
+    this.waitingPlayers = this.players.filter((it) => it.status === 'ACTIVE');
     this.currentBet = 0;
     this.pool.set(
       this.round,

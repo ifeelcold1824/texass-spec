@@ -1,34 +1,27 @@
-import { TexassClientStatus } from './holdem';
-import { ERROR_MSG } from './constant';
 import { PlayerId } from './player';
+import { TexassRound } from './constant';
 
 export const resultsCalculator = (
-  status: TexassClientStatus,
   handValues: Map<PlayerId, number>,
+  pool: Map<TexassRound, Map<PlayerId, number>>,
 ) => {
-  if (status.gameOver != true) {
-    throw Error(ERROR_MSG.GAME_IS_RUNNING);
-  }
-
-  const sortedHandValue = buildSortedHandValueMap(handValues);
-  const flatPool = buildFlatPool(status);
+  const flatPool = buildFlatPool(pool);
   const splitPool = buildSplitPool(flatPool);
-  return assignPrize(splitPool, sortedHandValue, status);
+  return assignPrize(splitPool, handValues);
 };
 
 const assignPrize = (
   splitPool: Map<number, PlayerId[]>,
-  sortedHandValueMap: PlayerId[][],
-  status: TexassClientStatus,
+  handValues: Map<PlayerId, number>,
 ) => {
-  const prizePool = new Map(
-    [...status.players.keys()].map((playerId) => [playerId, 0]),
-  );
+  const prizePool = new Map([...handValues.entries()].map(([id]) => [id, 0]));
+  const sortedHandValue = buildSortedHandValue(handValues);
+
   splitPool.forEach((playersCanShare, amount) => {
     let sharePlayers = [];
     let index = 0;
-    while (sharePlayers.length === 0 && index < sortedHandValueMap.length) {
-      const winPlayer = sortedHandValueMap[index];
+    while (sharePlayers.length === 0 && index < sortedHandValue.length) {
+      const winPlayer = sortedHandValue[index];
       sharePlayers = playersCanShare.filter((p) => winPlayer.includes(p));
       index += 1;
     }
@@ -66,20 +59,21 @@ const buildSplitPool = (flatPool: Map<PlayerId, number>) => {
   return splitPool;
 };
 
-const buildFlatPool = (status: TexassClientStatus) => {
-  const flatPool = new Map(
-    [...status.players.keys()].map((playerId) => [playerId, 0]),
-  );
-  status.pool.forEach((roundPool) => {
+const buildFlatPool = (pool: Map<TexassRound, Map<PlayerId, number>>) => {
+  const flatPool = new Map<PlayerId, number>();
+  pool.forEach((roundPool) => {
     roundPool.forEach((value, player) => {
-      flatPool.set(player, flatPool.get(player) + value);
+      flatPool.set(
+        player,
+        (flatPool.get(player) ? flatPool.get(player) : 0) + value,
+      );
     });
   });
 
   return flatPool;
 };
 
-const buildSortedHandValueMap = (handValues: Map<PlayerId, number>) => {
+const buildSortedHandValue = (handValues: Map<PlayerId, number>) => {
   const handValueMap: Map<number, PlayerId[]> = new Map();
   handValues.forEach((value, playId) => {
     if (handValueMap.has(value)) {
