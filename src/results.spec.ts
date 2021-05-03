@@ -1,5 +1,5 @@
 import { resultsCalculator } from './results';
-import { HoldemRound } from './constant';
+import { HoldemRound } from './round';
 
 describe('results test', () => {
   it('should return correct result given status and hand value', () => {
