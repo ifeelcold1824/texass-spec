@@ -1,69 +1,45 @@
 import { Player } from './player';
+import { Action } from './action';
 
 export class Round {
   pool: Map<Player, number> = new Map();
   currentBet = 0;
   activePlayers: Player[];
 
-  constructor(private players: Player[], public name: HoldemRound) {
+  constructor(private players: Player[], public roundId: HoldemRound) {
     this.initRound();
+  }
+
+  execute(action: Action) {
+    action.execute(this, this.activePlayers.shift());
+  }
+
+  betToPool(player: Player, bid: number) {
+    player.pay(bid - this.pool.get(player));
+    this.pool.set(player, bid);
+    this.currentBet = bid;
   }
 
   get actionPlayer() {
     return this.activePlayers[0];
   }
 
-  get isLastRound() {
-    return this.name === HoldemRound.RIVER;
-  }
-
   get minWager() {
     return 10;
   }
 
-  fold() {
-    const player = this.actionPlayer;
-
-    player.status = 'OUT';
-
-    this.activePlayers.shift();
-  }
-
-  check() {
-    const player = this.actionPlayer;
-
-    this.activePlayers.push(player);
-    this.activePlayers.shift();
-  }
-
-  bet() {
-    const player = this.actionPlayer;
-
-    const bid = this.currentBet ? this.currentBet : this.minWager;
-    player.pay(bid - this.pool.get(player));
-    this.pool.set(player, bid);
-    this.currentBet = bid;
-
-    this.activePlayers.push(player);
-    this.activePlayers.shift();
-  }
-
-  raise(amount: number) {
-    const player = this.actionPlayer;
-
-    const bid = this.currentBet + amount;
-    player.pay(bid - this.pool.get(player));
-    this.pool.set(player, bid);
-    this.currentBet = bid;
-
-    this.activePlayers.push(player);
-    this.activePlayers.shift();
+  get isRoundOver() {
+    return (
+      Array.from(this.pool.entries())
+        .filter(([player]) => player.isActive)
+        .filter(([, bet]) => bet < this.currentBet).length === 0
+    );
   }
 
   private initRound() {
-    this.activePlayers = this.players.filter((it) => it.status === 'ACTIVE');
+    this.activePlayers = this.players.filter((player) => player.isActive);
     this.currentBet = 0;
-    this.pool = new Map(this.activePlayers.map((it) => [it, null]));
+    this.pool = new Map(this.activePlayers.map((player) => [player, null]));
   }
 }
 

@@ -1,6 +1,6 @@
 import { Player } from './player';
-import { ActionType, ERROR_MSG } from './constant';
 import { HoldemRound, Round } from './round';
+import { Action } from './action';
 
 export class Holdem {
   gameOver = false;
@@ -9,60 +9,44 @@ export class Holdem {
   constructor(public players: Player[]) {
     this.rounds = [new Round(this.players, HoldemRound.PRE_FLOP)];
   }
-  get round() {
+
+  execute(action: Action) {
+    this.currentRound.execute(action);
+
+    if (this.currentRound.isRoundOver) {
+      this.nextRound();
+    }
+    this.checkGameOver();
+  }
+
+  get currentRound() {
     return this.rounds[0];
   }
+
   get pool() {
-    return new Map(this.rounds.map((it) => [it.name, it.pool]));
-  }
-
-  get actionPlayer() {
-    return this.round.activePlayers[0];
-  }
-
-  action(action: ActionType, amount?: number) {
-    if (this.gameOver) {
-      throw Error(ERROR_MSG.GAME_OVER);
-    }
-    switch (action) {
-      case ActionType.FOLD:
-        this.round.fold();
-        break;
-      case ActionType.CHECK:
-        this.round.check();
-        break;
-      case ActionType.BET:
-        this.round.bet();
-        break;
-      case ActionType.RAISE:
-        this.round.raise(amount);
-        break;
-    }
-
-    this.checkGameOver();
-    if (this.roundOver) {
-      this.switchRound();
-    }
-    return this;
-  }
-
-  private get roundOver() {
-    return (
-      Array.from(this.round.pool.entries())
-        .filter(([player]) => this.round.activePlayers.includes(player))
-        .filter(([, bet]) => bet < this.round.currentBet || !bet).length === 0
-    );
+    return this.rounds
+      .map((it) => it.pool)
+      .reduce((accumulator, current) => {
+        [...current.entries()].map(([player, bid]) => {
+          accumulator.set(player, (accumulator.get(player) || 0) + bid);
+        });
+        return accumulator;
+      });
   }
 
   private checkGameOver() {
-    this.gameOver = this.round.activePlayers.length <= 1;
+    this.gameOver = this.isPlayerLeftLessThan1 || this.isInvalidRound;
   }
 
-  private switchRound() {
-    if (this.round.isLastRound) {
-      this.gameOver = true;
-    } else {
-      this.rounds.unshift(new Round(this.players, this.round.name + 1));
-    }
+  private nextRound() {
+    this.rounds.unshift(new Round(this.players, this.currentRound.roundId + 1));
+  }
+
+  private get isPlayerLeftLessThan1() {
+    return this.currentRound.activePlayers.length <= 1;
+  }
+
+  private get isInvalidRound() {
+    return this.currentRound.roundId > 4;
   }
 }

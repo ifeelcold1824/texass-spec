@@ -1,12 +1,10 @@
 import { PlayerId } from './player';
-import { HoldemRound } from './constant';
 
 export const resultsCalculator = (
   handValues: Map<PlayerId, number>,
-  pool: Map<HoldemRound, Map<PlayerId, number>>,
+  pool: Map<PlayerId, number>,
 ) => {
-  const flatPool = buildFlatPool(pool);
-  const splitPool = buildSplitPool(flatPool);
+  const splitPool = buildSplitPool(pool);
   return assignPrize(splitPool, handValues);
 };
 
@@ -36,11 +34,6 @@ const assignPrize = (
 
 const buildSplitPool = (flatPool: Map<PlayerId, number>) => {
   const splitPool: Map<number, PlayerId[]> = new Map();
-  flatPool.forEach((value, key) => {
-    if (value === 0) {
-      flatPool.delete(key);
-    }
-  });
   let largerThan0 = [...flatPool.values()].filter((v) => v > 0);
   while (largerThan0.length > 0) {
     let sum = 0;
@@ -57,20 +50,6 @@ const buildSplitPool = (flatPool: Map<PlayerId, number>) => {
     largerThan0 = [...flatPool.values()].filter((v) => v > 0);
   }
   return splitPool;
-};
-
-const buildFlatPool = (pool: Map<HoldemRound, Map<PlayerId, number>>) => {
-  const flatPool = new Map<PlayerId, number>();
-  pool.forEach((roundPool) => {
-    roundPool.forEach((value, player) => {
-      flatPool.set(
-        player,
-        (flatPool.get(player) ? flatPool.get(player) : 0) + value,
-      );
-    });
-  });
-
-  return flatPool;
 };
 
 const buildSortedHandValue = (handValues: Map<PlayerId, number>) => {

@@ -5,7 +5,9 @@
   "author": "TP",
   "private": true,
   "license": "GPL",
-  "scripts": {},
+  "scripts": {
+    "test": "jest --collect-coverage"
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^26.0.23",

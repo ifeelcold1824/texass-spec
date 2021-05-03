@@ -1,5 +1,6 @@
 import { HoldemRound, Round } from './round';
 import { Player } from './player';
+import { Bet, Check, Fold, Raise } from './action';
 
 describe('Round test', () => {
   let playerA: Player;
@@ -31,16 +32,11 @@ describe('Round test', () => {
     );
   });
 
-  it('RIVER should be the last round', () => {
-    const round = new Round([playerA, playerB, playerC], HoldemRound.RIVER);
-    expect(round.isLastRound).toBeTruthy();
-  });
-
   it('fold will be mark as OUT and removed from active player', () => {
     const round = new Round([playerA, playerB, playerC], HoldemRound.PRE_FLOP);
 
     expect(round.actionPlayer.id).toEqual('b');
-    round.fold();
+    round.execute(new Fold());
 
     expect(playerB.status).toEqual('OUT');
     expect(round.activePlayers).toHaveLength(1);
@@ -53,7 +49,7 @@ describe('Round test', () => {
     const round = new Round([playerA, playerB, playerC], HoldemRound.PRE_FLOP);
 
     expect(round.actionPlayer.id).toEqual('b');
-    round.check();
+    round.execute(new Check());
 
     expect(playerB.status).toEqual('ACTIVE');
     expect(round.activePlayers).toHaveLength(2);
@@ -67,7 +63,7 @@ describe('Round test', () => {
     const originalBet = round.pool.get(playerB);
     const originalBalance = playerB.balance;
     round.currentBet = 0;
-    round.bet();
+    round.execute(new Bet());
 
     expect(round.pool.get(playerB) - originalBet).toEqual(round.minWager);
     expect(originalBalance - playerB.balance).toEqual(round.minWager);
@@ -84,7 +80,7 @@ describe('Round test', () => {
     const originalBalance = playerB.balance;
     const currentBet = 20;
     round.currentBet = currentBet;
-    round.bet();
+    round.execute(new Bet());
 
     expect(round.pool.get(playerB) - originalBet).toEqual(currentBet);
     expect(originalBalance - playerB.balance).toEqual(currentBet);
@@ -102,7 +98,7 @@ describe('Round test', () => {
     const currentBet = 20;
     const raiseAmount = 10;
     round.currentBet = currentBet;
-    round.raise(raiseAmount);
+    round.execute(new Raise(raiseAmount));
 
     expect(round.pool.get(playerB) - originalBet).toEqual(
       currentBet + raiseAmount,
