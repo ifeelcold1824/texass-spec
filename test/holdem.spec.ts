@@ -23,7 +23,7 @@ describe('Texass-client test', () => {
     });
   });
 
-  it('should reduce pool in each round to a combined pool', () => {
+  it('should sum pool in each round to a combined pool', () => {
     const client = new Holdem([playerA, playerB, playerC]);
     client.execute(new Bet());
     client.execute(new Bet());
