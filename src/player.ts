@@ -5,6 +5,7 @@ export class Player {
   holeCards: Card[];
   balance: number;
   status: PlayerStatus;
+  actedInRound = false;
 
   constructor(id: PlayerId, status: PlayerStatus = 'ACTIVE', balance = 0) {
     this.id = id;

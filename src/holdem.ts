@@ -15,6 +15,9 @@ export class Holdem {
   }
 
   execute(action: Action) {
+    if (this.gameOver) {
+      throw new Error('can not take action when game over');
+    }
     this.currentRound.execute(action);
 
     if (this.shouldSwitchRound) {

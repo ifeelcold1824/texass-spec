@@ -1,7 +1,7 @@
 import { Holdem } from '../src/holdem';
 import { Player } from '../src/player';
 import { HoldemRound } from '../src/round';
-import { Bet, Fold } from '../src/action';
+import { Bet, Check, Fold } from '../src/action';
 
 describe('Texass-client test', () => {
   let playerA: Player;
@@ -20,6 +20,31 @@ describe('Texass-client test', () => {
       expect(client).toBeDefined();
       expect(client.currentRound.actionPlayer).toEqual(playerB);
       expect(client.currentRound.roundId).toEqual(HoldemRound.PRE_FLOP);
+    });
+  });
+
+  describe('game over', () => {
+    it('should game over when active player less than 1', () => {
+      const client = new Holdem([playerA, playerB, playerC]);
+      expect(client.currentRound.actionPlayer).toEqual(playerB);
+      client.execute(new Fold());
+      expect(client.currentRound.activePlayers.length).toEqual(1);
+      expect(client.gameOver).toBeTruthy();
+    });
+
+    it('should game over when RIVER round is over', () => {
+      const client = new Holdem([playerA, playerB, playerC]);
+      client.execute(new Check());
+      client.execute(new Check());
+      client.execute(new Check());
+      client.execute(new Check());
+      client.execute(new Check());
+      client.execute(new Check());
+      client.execute(new Check());
+      client.execute(new Check());
+      expect(client.currentRound.roundId).toEqual(HoldemRound.RIVER);
+      expect(client.currentRound.isRoundOver).toBeTruthy();
+      expect(client.gameOver).toBeTruthy();
     });
   });
 

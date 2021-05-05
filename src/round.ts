@@ -11,7 +11,9 @@ export class Round {
   }
 
   execute(action: Action) {
-    action.execute(this, this.activePlayers.shift());
+    const player = this.activePlayers.shift();
+    action.execute(this, player);
+    player.actedInRound = true;
   }
 
   betToPool(player: Player, bid: number) {
@@ -32,18 +34,21 @@ export class Round {
     return (
       Array.from(this.pool.entries())
         .filter(([player]) => player.isActive)
-        .filter(([, bet]) => bet < this.currentBet).length === 0
+        .filter(([player, bet]) =>
+          player.actedInRound ? bet < this.currentBet : true,
+        ).length === 0
     );
   }
 
   get isFinalRound() {
-    return this.roundId === HoldemRound.TURN;
+    return this.roundId === HoldemRound.RIVER;
   }
 
   private initRound() {
     this.activePlayers = this.players.filter((player) => player.isActive);
+    this.activePlayers.forEach((player) => (player.actedInRound = false));
     this.currentBet = 0;
-    this.pool = new Map(this.activePlayers.map((player) => [player, null]));
+    this.pool = new Map(this.activePlayers.map((player) => [player, 0]));
   }
 }
 
