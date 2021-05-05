@@ -1,8 +1,8 @@
 import { Player } from './player';
 import { HoldemRound, Round } from './round';
-import { Action } from './action';
 import { Deck } from './deck/deck';
 import { Card } from './deck/card';
+import { Action } from './action/action';
 
 export class Holdem {
   private readonly deck = new Deck();

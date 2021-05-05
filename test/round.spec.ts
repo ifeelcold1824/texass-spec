@@ -1,6 +1,9 @@
 import { HoldemRound, Round } from '../src/round';
 import { Player } from '../src/player';
-import { Bet, Check, Fold, Raise } from '../src/action';
+import { Fold } from '../src/action/fold';
+import { Check } from '../src/action/check';
+import { Bet } from '../src/action/bet';
+import { Raise } from '../src/action/raise';
 
 describe('Round test', () => {
   let playerA: Player;
@@ -26,8 +29,8 @@ describe('Round test', () => {
     expect(round.currentBet).toEqual(0);
     expect(round.pool).toEqual(
       new Map([
-        [playerB, null],
-        [playerC, null],
+        [playerB, 0],
+        [playerC, 0],
       ]),
     );
   });

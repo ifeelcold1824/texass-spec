@@ -1,5 +1,5 @@
 import { Player } from './player';
-import { Action } from './action';
+import { Action } from './action/action';
 
 export class Round {
   pool: Map<Player, number> = new Map();

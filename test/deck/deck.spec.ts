@@ -1,5 +1,5 @@
-import { Deck } from '../src/deck/deck';
-import { Card } from '../src/deck/card';
+import { Deck } from '../../src/deck/deck';
+import { Card } from '../../src/deck/card';
 
 describe('deck test', () => {
   let deck: Deck;

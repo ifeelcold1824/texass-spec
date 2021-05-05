@@ -17,6 +17,10 @@ export class Player {
     return this.status === 'ACTIVE';
   }
 
+  has(amount: number) {
+    return this.balance >= amount;
+  }
+
   pay(amount: number) {
     this.balance -= amount;
   }

@@ -1,7 +1,9 @@
 import { Holdem } from '../src/holdem';
 import { Player } from '../src/player';
 import { HoldemRound } from '../src/round';
-import { Bet, Check, Fold } from '../src/action';
+import { Fold } from '../src/action/fold';
+import { Check } from '../src/action/check';
+import { Bet } from '../src/action/bet';
 
 describe('Texass-client test', () => {
   let playerA: Player;
@@ -45,6 +47,15 @@ describe('Texass-client test', () => {
       expect(client.currentRound.roundId).toEqual(HoldemRound.RIVER);
       expect(client.currentRound.isRoundOver).toBeTruthy();
       expect(client.gameOver).toBeTruthy();
+    });
+
+    it('should throw error when action on game over', () => {
+      const client = new Holdem([playerA, playerB, playerC]);
+      client.execute(new Fold());
+      expect(client.gameOver).toBeTruthy();
+      expect(() => {
+        client.execute(new Fold());
+      }).toThrowError('can not take action when game over');
     });
   });
 
