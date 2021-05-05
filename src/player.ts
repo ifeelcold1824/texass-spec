@@ -1,5 +1,8 @@
+import { Card } from './deck/card';
+
 export class Player {
   id: PlayerId;
+  holeCards: Card[];
   balance: number;
   status: PlayerStatus;
 

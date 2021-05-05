@@ -36,6 +36,10 @@ export class Round {
     );
   }
 
+  get isFinalRound() {
+    return this.roundId === HoldemRound.TURN;
+  }
+
   private initRound() {
     this.activePlayers = this.players.filter((player) => player.isActive);
     this.currentBet = 0;

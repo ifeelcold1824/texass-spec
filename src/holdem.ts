@@ -1,22 +1,25 @@
 import { Player } from './player';
 import { HoldemRound, Round } from './round';
 import { Action } from './action';
+import { Deck } from './deck/deck';
+import { Card } from './deck/card';
 
 export class Holdem {
-  gameOver = false;
+  private readonly deck = new Deck();
   rounds: Round[];
+  communityCards: Card[];
 
   constructor(public players: Player[]) {
     this.rounds = [new Round(this.players, HoldemRound.PRE_FLOP)];
+    this.dealCards();
   }
 
   execute(action: Action) {
     this.currentRound.execute(action);
 
-    if (this.currentRound.isRoundOver) {
+    if (this.shouldSwitchRound) {
       this.nextRound();
     }
-    this.checkGameOver();
   }
 
   get currentRound() {
@@ -34,19 +37,30 @@ export class Holdem {
       });
   }
 
-  private checkGameOver() {
-    this.gameOver = this.isPlayerLeftLessThan1 || this.isInvalidRound;
+  get gameOver() {
+    return this.isEndOfFinalRound || this.isPlayerLeftLessThan1;
   }
 
-  private nextRound() {
-    this.rounds.unshift(new Round(this.players, this.currentRound.roundId + 1));
+  private get isEndOfFinalRound() {
+    return this.currentRound.isRoundOver && this.currentRound.isFinalRound;
   }
 
   private get isPlayerLeftLessThan1() {
     return this.currentRound.activePlayers.length <= 1;
   }
 
-  private get isInvalidRound() {
-    return this.currentRound.roundId > 4;
+  private get shouldSwitchRound() {
+    return this.currentRound.isRoundOver && !this.currentRound.isFinalRound;
+  }
+
+  private nextRound() {
+    this.rounds.unshift(new Round(this.players, this.currentRound.roundId + 1));
+  }
+
+  private dealCards() {
+    this.players.forEach((player) => {
+      player.holeCards = this.deck.draw(2);
+    });
+    this.communityCards = this.deck.draw(5);
   }
 }
