@@ -10,7 +10,7 @@ describe('deck test', () => {
 
   it('can draw card', () => {
     const res = deck.draw();
-    expect(res).toBeInstanceOf(Card);
+    expect(res[0]).toBeInstanceOf(Card);
   });
 
   it('should never draw 2 same card', () => {
@@ -20,23 +20,15 @@ describe('deck test', () => {
   });
 
   it('should throw error when draw cards if no card in deck', () => {
-    draw52Cards(deck);
+    deck.draw(52);
     expect(() => {
       deck.draw();
-    }).toThrowError('Empty deck');
+    }).toThrowError('Cards in deck not enough');
   });
 
   it('2 deck should draw different cards', () => {
     const deckA = new Deck();
     const deckB = new Deck();
-    expect(draw52Cards(deckA)).not.toEqual(draw52Cards(deckB));
+    expect(deckA.draw(52)).not.toEqual(deckB.draw(52));
   });
-
-  const draw52Cards = (deck: Deck) => {
-    const cards: Card[] = new Array(52);
-    for (let i = 0; i < 52; i++) {
-      cards[i] = deck.draw();
-    }
-    return cards;
-  };
 });

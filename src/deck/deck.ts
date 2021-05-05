@@ -2,7 +2,7 @@ import { Card } from './card';
 import { shuffle } from '../utils/shuffle';
 
 export class Deck {
-  private readonly cards: Card[];
+  private cards: Card[];
 
   constructor() {
     this.cards = [];
@@ -14,10 +14,12 @@ export class Deck {
     shuffle(this.cards);
   }
 
-  draw() {
-    if (!this.cards.length) {
-      throw new Error('Empty deck');
+  draw(number = 1) {
+    if (this.cards.length < number) {
+      throw new Error('Cards in deck not enough');
     }
-    return this.cards.shift();
+    const cards = this.cards.slice(0, number);
+    this.cards = this.cards.slice(number, this.cards.length);
+    return cards;
   }
 }
