@@ -1,7 +1,7 @@
-import { Holdem } from './holdem';
-import { Player } from './player';
-import { HoldemRound } from './round';
-import { Bet, Fold } from './action';
+import { Holdem } from '../src/holdem';
+import { Player } from '../src/player';
+import { HoldemRound } from '../src/round';
+import { Bet, Fold } from '../src/action';
 
 describe('Texass-client test', () => {
   let playerA: Player;

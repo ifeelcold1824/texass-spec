@@ -1,4 +1,4 @@
-import { resultsCalculator } from './results';
+import { resultsCalculator } from '../src/results';
 
 describe('results test', () => {
   it('winner should takes all', () => {

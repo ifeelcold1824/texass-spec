@@ -1,6 +1,6 @@
-import { HoldemRound, Round } from './round';
-import { Player } from './player';
-import { Bet, Check, Fold, Raise } from './action';
+import { HoldemRound, Round } from '../src/round';
+import { Player } from '../src/player';
+import { Bet, Check, Fold, Raise } from '../src/action';
 
 describe('Round test', () => {
   let playerA: Player;
