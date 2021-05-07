@@ -33,7 +33,10 @@
       "ts"
     ],
     "rootDir": ".",
-    "roots": ["src/", "test/"],
+    "roots": [
+      "src/",
+      "test/"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
