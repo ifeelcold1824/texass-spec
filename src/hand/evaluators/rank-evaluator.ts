@@ -1,8 +1,8 @@
-import {Rank} from "./rank";
-import {Hand} from "../hand";
+import { Rank } from './rank';
+import { Hand } from '../hand';
 
-export interface RankEvaluator{
-  rank: Rank
+export interface RankEvaluator {
+  rank: Rank;
 
-  evaluate(hand: Hand): boolean
+  evaluate(hand: Hand): boolean;
 }

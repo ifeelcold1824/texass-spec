@@ -6,7 +6,8 @@
   "private": true,
   "license": "GPL",
   "scripts": {
-    "test": "jest --collect-coverage"
+    "test": "jest --collect-coverage",
+    "lint": "eslint \"**/*.ts\" --fix"
   },
   "dependencies": {},
   "devDependencies": {

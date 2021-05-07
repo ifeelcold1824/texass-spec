@@ -1,11 +1,11 @@
-import {RankEvaluator} from "./rank-evaluator";
-import {Rank} from "./rank";
-import {Hand} from "../hand";
+import { RankEvaluator } from './rank-evaluator';
+import { Rank } from './rank';
+import { Hand } from '../hand';
 
 export class RoyalFlush implements RankEvaluator {
-  rank = Rank.ROYAL_FLUSH
+  rank = Rank.ROYAL_FLUSH;
 
   evaluate(hand: Hand) {
-    return hand.isFlush && hand.isAceStraight
+    return hand.isFlush && hand.isAceStraight;
   }
 }

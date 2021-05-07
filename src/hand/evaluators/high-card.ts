@@ -1,11 +1,10 @@
-import {RankEvaluator} from "./rank-evaluator";
-import {Rank} from "./rank";
-import {Hand} from "../hand";
+import { RankEvaluator } from './rank-evaluator';
+import { Rank } from './rank';
 
 export class HighCard implements RankEvaluator {
-  rank = Rank.HIGH_CARD
+  rank = Rank.HIGH_CARD;
 
-  evaluate(hand: Hand) {
-    return true
+  evaluate() {
+    return true;
   }
 }
