@@ -1,11 +1,11 @@
-import { Rank } from './rank';
-import { RankType } from './rankType';
+import { Rank } from '../rank';
+import { RankType } from '../rank-type';
 import { Hand } from '../hand';
 
 export class Flush implements Rank {
   rank = RankType.FLUSH;
 
-  evaluate(hand: Hand) {
+  check(hand: Hand) {
     return hand.isFlush;
   }
 }

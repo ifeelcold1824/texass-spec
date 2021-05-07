@@ -1,10 +1,10 @@
-import { Rank } from './rank';
-import { RankType } from './rankType';
+import { Rank } from '../rank';
+import { RankType } from '../rank-type';
 
 export class HighCard implements Rank {
   rank = RankType.HIGH_CARD;
 
-  evaluate() {
+  check() {
     return true;
   }
 }
