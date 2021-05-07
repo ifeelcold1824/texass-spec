@@ -1,9 +1,9 @@
-import { RankEvaluator } from './rank-evaluator';
 import { Rank } from './rank';
+import { RankType } from './rankType';
 import { Hand } from '../hand';
 
-export class TwoPairs implements RankEvaluator {
-  rank = Rank.TWO_PAIRS;
+export class TwoPairs implements Rank {
+  rank = RankType.TWO_PAIRS;
 
   evaluate(hand: Hand) {
     return (

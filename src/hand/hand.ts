@@ -1,22 +1,22 @@
 import { Card } from '../deck/card';
-import { RoyalFlush } from './evaluators/royal-flush';
-import { StraightFlush } from './evaluators/straight-flush';
-import { FourOfAKind } from './evaluators/four-of-a-kind';
-import { FullHouse } from './evaluators/full-house';
-import { Flush } from './evaluators/flush';
-import { Straight } from './evaluators/straight';
-import { ThreeOfAKind } from './evaluators/three-of-a-kind';
-import { TwoPairs } from './evaluators/two-pairs';
-import { Pair } from './evaluators/pair';
-import { HighCard } from './evaluators/high-card';
-import { RankEvaluator } from './evaluators/rank-evaluator';
+import { RoyalFlush } from './ranks/royal-flush';
+import { StraightFlush } from './ranks/straight-flush';
+import { FourOfAKind } from './ranks/four-of-a-kind';
+import { FullHouse } from './ranks/full-house';
+import { Flush } from './ranks/flush';
+import { Straight } from './ranks/straight';
+import { ThreeOfAKind } from './ranks/three-of-a-kind';
+import { TwoPairs } from './ranks/two-pairs';
+import { Pair } from './ranks/pair';
+import { HighCard } from './ranks/high-card';
+import { Rank } from './ranks/rank';
 
 export class Hand {
   readonly isFlush: boolean;
   readonly isAceStraight: boolean;
   readonly isStraight: boolean;
   readonly cardRanks: Map<number, number>;
-  private readonly evaluators: RankEvaluator[] = [
+  private readonly ranks: Rank[] = [
     new RoyalFlush(),
     new StraightFlush(),
     new FourOfAKind(),
@@ -53,8 +53,7 @@ export class Hand {
   }
 
   get rank() {
-    return this.evaluators.find((evaluator) =>
-      evaluator.evaluate(this) ? evaluator : undefined,
-    ).rank;
+    return this.ranks.find((rank) => (rank.evaluate(this) ? rank : undefined))
+      .rank;
   }
 }

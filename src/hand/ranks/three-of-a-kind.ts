@@ -1,9 +1,9 @@
-import { RankEvaluator } from './rank-evaluator';
 import { Rank } from './rank';
+import { RankType } from './rankType';
 import { Hand } from '../hand';
 
-export class ThreeOfAKind implements RankEvaluator {
-  rank = Rank.THREE_OF_A_KIND;
+export class ThreeOfAKind implements Rank {
+  rank = RankType.THREE_OF_A_KIND;
 
   evaluate(hand: Hand) {
     return (

@@ -1,6 +1,6 @@
 import { Hand } from '../src/hand/hand';
 import { Card } from '../src/deck/card';
-import { Rank } from '../src/hand/evaluators/rank';
+import { RankType } from '../src/hand/ranks/rankType';
 
 describe('hand test', () => {
   it('should throw error when not give 5 cards', () => {
@@ -17,7 +17,7 @@ describe('hand test', () => {
       new Card(13, 0),
       new Card(1, 0),
     ]);
-    expect(hand.rank).toEqual(Rank.ROYAL_FLUSH);
+    expect(hand.rank).toEqual(RankType.ROYAL_FLUSH);
   });
 
   it('9 T J Q K with same suit should be Straight flush', () => {
@@ -28,7 +28,7 @@ describe('hand test', () => {
       new Card(12, 0),
       new Card(13, 0),
     ]);
-    expect(hand.rank).toEqual(Rank.STRAIGHT_FLUSH);
+    expect(hand.rank).toEqual(RankType.STRAIGHT_FLUSH);
   });
 
   it('9 K K K K should be Four of a kind', () => {
@@ -39,7 +39,7 @@ describe('hand test', () => {
       new Card(13, 2),
       new Card(13, 3),
     ]);
-    expect(hand.rank).toEqual(Rank.FOUR_OF_A_KIND);
+    expect(hand.rank).toEqual(RankType.FOUR_OF_A_KIND);
   });
 
   it('9 9 K K K should be Full house', () => {
@@ -50,7 +50,7 @@ describe('hand test', () => {
       new Card(13, 2),
       new Card(13, 3),
     ]);
-    expect(hand.rank).toEqual(Rank.FULL_HOUSE);
+    expect(hand.rank).toEqual(RankType.FULL_HOUSE);
   });
 
   it('same suit should be Flush', () => {
@@ -61,7 +61,7 @@ describe('hand test', () => {
       new Card(13, 0),
       new Card(13, 0),
     ]);
-    expect(hand.rank).toEqual(Rank.FLUSH);
+    expect(hand.rank).toEqual(RankType.FLUSH);
   });
 
   it('T J Q K A with different suit should be Straight', () => {
@@ -72,7 +72,7 @@ describe('hand test', () => {
       new Card(13, 0),
       new Card(1, 0),
     ]);
-    expect(hand.rank).toEqual(Rank.STRAIGHT);
+    expect(hand.rank).toEqual(RankType.STRAIGHT);
   });
 
   it('8 9 K K K should be Three of a kind', () => {
@@ -83,7 +83,7 @@ describe('hand test', () => {
       new Card(13, 2),
       new Card(13, 3),
     ]);
-    expect(hand.rank).toEqual(Rank.THREE_OF_A_KIND);
+    expect(hand.rank).toEqual(RankType.THREE_OF_A_KIND);
   });
 
   it('8 9 9 K K should be Two pairs', () => {
@@ -94,7 +94,7 @@ describe('hand test', () => {
       new Card(13, 2),
       new Card(13, 3),
     ]);
-    expect(hand.rank).toEqual(Rank.TWO_PAIRS);
+    expect(hand.rank).toEqual(RankType.TWO_PAIRS);
   });
 
   it('8 9 T K K should be Pairs', () => {
@@ -105,7 +105,7 @@ describe('hand test', () => {
       new Card(13, 2),
       new Card(13, 3),
     ]);
-    expect(hand.rank).toEqual(Rank.PAIR);
+    expect(hand.rank).toEqual(RankType.PAIR);
   });
 
   it('8 9 T Q K should be high card', () => {
@@ -116,6 +116,6 @@ describe('hand test', () => {
       new Card(12, 2),
       new Card(13, 3),
     ]);
-    expect(hand.rank).toEqual(Rank.HIGH_CARD);
+    expect(hand.rank).toEqual(RankType.HIGH_CARD);
   });
 });

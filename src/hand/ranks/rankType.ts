@@ -1,4 +1,4 @@
-export enum Rank {
+export enum RankType {
   HIGH_CARD,
   PAIR,
   TWO_PAIRS,

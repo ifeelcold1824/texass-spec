@@ -1,9 +1,9 @@
-import { RankEvaluator } from './rank-evaluator';
 import { Rank } from './rank';
+import { RankType } from './rankType';
 import { Hand } from '../hand';
 
-export class FullHouse implements RankEvaluator {
-  rank = Rank.FULL_HOUSE;
+export class FullHouse implements Rank {
+  rank = RankType.FULL_HOUSE;
 
   evaluate(hand: Hand) {
     return (
