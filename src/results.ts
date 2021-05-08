@@ -16,7 +16,7 @@ const assignPrize = (
   const sortedHandValue = buildSortedHandValue(handValues);
 
   splitPool.forEach((playersCanShare, amount) => {
-    let sharePlayers = [];
+    let sharePlayers: PlayerId[] = [];
     let index = 0;
     while (sharePlayers.length === 0 && index < sortedHandValue.length) {
       const winPlayer = sortedHandValue[index];
@@ -25,7 +25,7 @@ const assignPrize = (
     }
     const eachShare = amount / sharePlayers.length;
     sharePlayers.forEach((p) => {
-      prizePool.set(p, prizePool.get(p) + eachShare);
+      prizePool.set(p, (prizePool.get(p) || 0) + eachShare);
     });
   });
 
@@ -37,7 +37,7 @@ const buildSplitPool = (flatPool: Map<PlayerId, number>) => {
   let largerThan0 = [...flatPool.values()].filter((v) => v > 0);
   while (largerThan0.length > 0) {
     let sum = 0;
-    const playerInPool = [];
+    const playerInPool: PlayerId[] = [];
     const minValue = Math.min(...largerThan0);
     flatPool.forEach((value, player) => {
       if (value != 0) {
@@ -55,11 +55,9 @@ const buildSplitPool = (flatPool: Map<PlayerId, number>) => {
 const buildSortedHandValue = (handValues: Map<PlayerId, number>) => {
   const handValueMap: Map<number, PlayerId[]> = new Map();
   handValues.forEach((value, playId) => {
-    if (handValueMap.has(value)) {
-      handValueMap.get(value).push(playId);
-    } else {
-      handValueMap.set(value, [playId]);
-    }
+    const playerList = handValueMap.get(value) || [];
+    playerList.push(playId);
+    handValueMap.set(value, playerList);
   });
   return [...handValueMap.entries()]
     .sort((a, b) => b[0] - a[0])

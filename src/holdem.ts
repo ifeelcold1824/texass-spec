@@ -7,7 +7,7 @@ import { Action } from './action/action';
 export class Holdem {
   private readonly deck = new Deck();
   rounds: Round[];
-  communityCards: Card[];
+  communityCards: Card[] = [];
 
   constructor(public players: Player[]) {
     this.rounds = [new Round(this.players, HoldemRound.PRE_FLOP)];

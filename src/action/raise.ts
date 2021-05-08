@@ -15,7 +15,7 @@ export class Raise extends Action {
   protected validate(round: Round, player: Player) {
     return (
       this.amount > 0 &&
-      player.has(round.currentBet + this.amount - round.pool.get(player))
+      player.has(round.currentBet + this.amount - round.getBidOfPlayer(player))
     );
   }
 }

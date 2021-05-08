@@ -11,5 +11,5 @@ export abstract class Action {
 
   protected abstract validate(round: Round, player: Player): boolean;
 
-  protected abstract executeFn(round: Round, player: Player);
+  protected abstract executeFn(round: Round, player: Player): void;
 }

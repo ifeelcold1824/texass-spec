@@ -37,9 +37,10 @@ export class Hand {
         new Map<CardRank, number>(),
       ),
     );
-    this.rank = this.handRanks.find((rank) =>
+    const rank = this.handRanks.find((rank) =>
       rank.check(this) ? rank : undefined,
-    ).rank;
+    );
+    this.rank = rank ? rank.rank : RankType.HIGH_CARD;
     this.scoringCardRanks = [...this.cardRanks.keys()];
   }
 
@@ -50,7 +51,7 @@ export class Hand {
     return this.diffCardArray(this.scoringCardRanks, hand.scoringCardRanks);
   }
 
-  private diffCardArray(a: CardRank[], b: CardRank[], index = 0) {
+  private diffCardArray(a: CardRank[], b: CardRank[], index = 0): number {
     if (index > a.length) {
       return 0;
     }

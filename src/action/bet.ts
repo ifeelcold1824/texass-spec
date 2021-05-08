@@ -12,6 +12,6 @@ export class Bet extends Action {
   }
 
   protected validate(round: Round, player: Player) {
-    return player.has(round.currentBet - round.pool.get(player));
+    return player.has(round.currentBet - round.getBidOfPlayer(player));
   }
 }

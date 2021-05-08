@@ -2,7 +2,7 @@ import { Card } from './deck/card';
 
 export class Player {
   id: PlayerId;
-  holeCards: Card[];
+  holeCards: Card[] = [];
   balance: number;
   status: PlayerStatus;
   actedInRound = false;
@@ -13,8 +13,12 @@ export class Player {
     this.balance = balance;
   }
 
-  get isActive() {
+  get isActiveInRound() {
     return this.status === 'ACTIVE';
+  }
+
+  get isActive() {
+    return this.status !== 'OUT';
   }
 
   has(amount: number) {
