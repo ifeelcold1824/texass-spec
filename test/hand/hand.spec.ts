@@ -9,7 +9,7 @@ describe('hand test', () => {
     }).toThrowError();
   });
 
-  describe('hand rank test', () => {
+  describe('hand rankType test', () => {
     it('T J Q K A with same suit should be Royal flush', () => {
       const hand = new Hand([
         new Card(10, 0),
@@ -18,7 +18,7 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(1, 0),
       ]);
-      expect(hand.rank).toEqual(RankType.ROYAL_FLUSH);
+      expect(hand.rank.type).toEqual(RankType.ROYAL_FLUSH);
     });
 
     it('9 T J Q K with same suit should be Straight flush', () => {
@@ -29,7 +29,7 @@ describe('hand test', () => {
         new Card(12, 0),
         new Card(13, 0),
       ]);
-      expect(hand.rank).toEqual(RankType.STRAIGHT_FLUSH);
+      expect(hand.rank.type).toEqual(RankType.STRAIGHT_FLUSH);
     });
 
     it('9 K K K K should be Four of a kind', () => {
@@ -40,7 +40,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank).toEqual(RankType.FOUR_OF_A_KIND);
+      expect(hand.rank.type).toEqual(RankType.FOUR_OF_A_KIND);
     });
 
     it('9 9 K K K should be Full house', () => {
@@ -51,7 +51,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank).toEqual(RankType.FULL_HOUSE);
+      expect(hand.rank.type).toEqual(RankType.FULL_HOUSE);
     });
 
     it('same suit should be Flush', () => {
@@ -62,7 +62,7 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(13, 0),
       ]);
-      expect(hand.rank).toEqual(RankType.FLUSH);
+      expect(hand.rank.type).toEqual(RankType.FLUSH);
     });
 
     it('T J Q K A with different suit should be Straight', () => {
@@ -73,7 +73,7 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(1, 0),
       ]);
-      expect(hand.rank).toEqual(RankType.STRAIGHT);
+      expect(hand.rank.type).toEqual(RankType.STRAIGHT);
     });
 
     it('8 9 K K K should be Three of a kind', () => {
@@ -84,7 +84,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank).toEqual(RankType.THREE_OF_A_KIND);
+      expect(hand.rank.type).toEqual(RankType.THREE_OF_A_KIND);
     });
 
     it('8 9 9 K K should be Two pairs', () => {
@@ -95,7 +95,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank).toEqual(RankType.TWO_PAIRS);
+      expect(hand.rank.type).toEqual(RankType.TWO_PAIRS);
     });
 
     it('8 9 T K K should be Pairs', () => {
@@ -106,7 +106,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank).toEqual(RankType.PAIR);
+      expect(hand.rank.type).toEqual(RankType.PAIR);
     });
 
     it('8 9 T Q K should be high card', () => {
@@ -117,36 +117,36 @@ describe('hand test', () => {
         new Card(12, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank).toEqual(RankType.HIGH_CARD);
+      expect(hand.rank.type).toEqual(RankType.HIGH_CARD);
     });
   });
 
   describe('diff test', () => {
-    it('diff of hand should be the diff of hand rank if their hand ranks is different ', () => {
-      const royalFlush = new Hand([
+    it('diff of hand should be the diff of hand rankType if their hand ranks is different ', () => {
+      const royalFlushHand = new Hand([
         new Card(10, 0),
         new Card(11, 0),
         new Card(12, 0),
         new Card(13, 0),
         new Card(1, 0),
       ]);
-      expect(royalFlush.rank).toEqual(RankType.ROYAL_FLUSH);
+      expect(royalFlushHand.rank.type).toEqual(RankType.ROYAL_FLUSH);
 
-      const flush = new Hand([
+      const flushHand = new Hand([
         new Card(1, 0),
         new Card(9, 0),
         new Card(13, 0),
         new Card(13, 0),
         new Card(13, 0),
       ]);
-      expect(flush.rank).toEqual(RankType.FLUSH);
+      expect(flushHand.rank.type).toEqual(RankType.FLUSH);
 
-      expect(royalFlush.diffRank(flush)).toEqual(
+      expect(royalFlushHand.rank.diff(flushHand.rank)).toEqual(
         RankType.ROYAL_FLUSH - RankType.FLUSH,
       );
     });
 
-    it('diff of hand should be the diff of card rank if their hand ranks is the same ', () => {
+    it('diff of hand should be the diff of card rankType if their hand ranks is the same ', () => {
       const hand1 = new Hand([
         new Card(2, 0),
         new Card(3, 0),
@@ -154,7 +154,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand1.rank).toEqual(RankType.PAIR);
+      expect(hand1.rank.type).toEqual(RankType.PAIR);
       const hand2 = new Hand([
         new Card(6, 0),
         new Card(7, 0),
@@ -162,11 +162,11 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand2.rank).toEqual(RankType.PAIR);
-      expect(hand1.diffRank(hand2)).toEqual(4 - 8);
+      expect(hand2.rank.type).toEqual(RankType.PAIR);
+      expect(hand1.rank.diff(hand2.rank)).toEqual(4 - 8);
     });
 
-    it('diff should be 0 if hand rank and card rank all the same', () => {
+    it('diff should be 0 if hand rankType and card rankType all the same', () => {
       const hand1 = new Hand([
         new Card(2, 1),
         new Card(3, 1),
@@ -174,7 +174,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand1.rank).toEqual(RankType.PAIR);
+      expect(hand1.rank.type).toEqual(RankType.PAIR);
       const hand2 = new Hand([
         new Card(2, 0),
         new Card(3, 0),
@@ -182,7 +182,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand1.diffRank(hand2)).toEqual(0);
+      expect(hand1.rank.diff(hand2.rank)).toEqual(0);
     });
   });
 });

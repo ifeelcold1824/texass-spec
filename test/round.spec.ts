@@ -48,7 +48,7 @@ describe('Round test', () => {
     );
   });
 
-  it('check will append action player to the bottom of active players', () => {
+  it('checkFn will append action player to the bottom of active players', () => {
     const round = new Round([playerA, playerB, playerC], HoldemRound.PRE_FLOP);
 
     expect(round.actionPlayer.id).toEqual('b');

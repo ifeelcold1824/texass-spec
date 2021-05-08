@@ -3,6 +3,7 @@ import { HoldemRound, Round } from './round';
 import { Deck } from './deck/deck';
 import { Card } from './deck/card';
 import { Action } from './action/action';
+import { Rank } from './hand/rank';
 
 export class Holdem {
   private readonly deck = new Deck();
@@ -23,6 +24,33 @@ export class Holdem {
     if (this.shouldSwitchRound) {
       this.nextRound();
     }
+  }
+
+  get sortedActivePlayerHandRanks() {
+    return this.players
+      .filter((player) => player.isActive)
+      .map((player): [Player, Rank] => [
+        player,
+        player.getHighestHandRank(this.communityCards),
+      ])
+      .reduce((pre, [curPlayer, curRank]) => {
+        for (let i = 0; i <= pre.length; i++) {
+          if (i === pre.length) {
+            pre.push([curRank, [curPlayer]]);
+            break;
+          }
+          const diff = curRank.diff(pre[i][0]);
+          if (diff > 0) {
+            pre.unshift([curRank, [curPlayer]]);
+            break;
+          }
+          if (diff === 0) {
+            pre[i][1].push(curPlayer);
+            break;
+          }
+        }
+        return pre;
+      }, new Array<[Rank, Player[]]>());
   }
 
   get currentRound() {
@@ -64,6 +92,6 @@ export class Holdem {
     this.players.forEach((player) => {
       player.holeCards = this.deck.draw(2);
     });
-    this.communityCards = this.deck.draw(5);
+    this.communityCards = this.deck.draw(3);
   }
 }

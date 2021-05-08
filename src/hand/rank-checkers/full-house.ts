@@ -1,11 +1,11 @@
-import { Rank } from '../rank';
+import { RankChecker } from '../rank-checker';
 import { RankType } from '../rank-type';
 import { Hand } from '../hand';
 
-export class FullHouse implements Rank {
-  rank = RankType.FULL_HOUSE;
+export class FullHouse extends RankChecker {
+  protected rankType = RankType.FULL_HOUSE;
 
-  check(hand: Hand) {
+  protected checkFn(hand: Hand): boolean {
     return (
       hand.cardRanks.size === 2 && Math.max(...hand.cardRanks.values()) === 3
     );

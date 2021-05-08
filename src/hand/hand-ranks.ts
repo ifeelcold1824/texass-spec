@@ -1,15 +1,15 @@
-import { RoyalFlush } from './ranks/royal-flush';
-import { StraightFlush } from './ranks/straight-flush';
-import { FourOfAKind } from './ranks/four-of-a-kind';
-import { FullHouse } from './ranks/full-house';
-import { Flush } from './ranks/flush';
-import { Straight } from './ranks/straight';
-import { ThreeOfAKind } from './ranks/three-of-a-kind';
-import { TwoPairs } from './ranks/two-pairs';
-import { Pair } from './ranks/pair';
-import { HighCard } from './ranks/high-card';
+import { RoyalFlush } from './rank-checkers/royal-flush';
+import { StraightFlush } from './rank-checkers/straight-flush';
+import { FourOfAKind } from './rank-checkers/four-of-a-kind';
+import { FullHouse } from './rank-checkers/full-house';
+import { Flush } from './rank-checkers/flush';
+import { Straight } from './rank-checkers/straight';
+import { ThreeOfAKind } from './rank-checkers/three-of-a-kind';
+import { TwoPairs } from './rank-checkers/two-pairs';
+import { Pair } from './rank-checkers/pair';
+import { HighCard } from './rank-checkers/high-card';
 
-export const HAND_RANKS = [
+export const HAND_RANK_CHECKERS = [
   new RoyalFlush(),
   new StraightFlush(),
   new FourOfAKind(),

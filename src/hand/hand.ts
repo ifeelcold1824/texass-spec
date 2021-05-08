@@ -1,6 +1,6 @@
 import { Card, CardRank } from '../deck/card';
-import { Rank } from './rank';
-import { HAND_RANKS } from './hand-ranks';
+import { RankChecker } from './rank-checker';
+import { HAND_RANK_CHECKERS } from './hand-ranks';
 import {
   byCardRankDec,
   cardLargerThanNextBy1Rank,
@@ -8,15 +8,15 @@ import {
   sortMapByValueDsc,
 } from '../utils/compare-fn';
 import { RankType } from './rank-type';
+import { Rank } from './rank';
 
 export class Hand {
-  private readonly handRanks: Rank[] = HAND_RANKS;
+  private readonly rankCheckers: RankChecker[] = HAND_RANK_CHECKERS;
   readonly isFlush: boolean;
   readonly isAceStraight: boolean;
   readonly isStraight: boolean;
   readonly cardRanks: Map<CardRank, number>;
-  readonly rank: RankType;
-  readonly scoringCardRanks: CardRank[];
+  readonly rank: Rank;
 
   constructor(cards: Card[]) {
     if (cards.length !== 5) {
@@ -37,27 +37,18 @@ export class Hand {
         new Map<CardRank, number>(),
       ),
     );
-    const rank = this.handRanks.find((rank) =>
-      rank.check(this) ? rank : undefined,
-    );
-    this.rank = rank ? rank.rank : RankType.HIGH_CARD;
-    this.scoringCardRanks = [...this.cardRanks.keys()];
+    this.rank = this.checkRank();
   }
 
-  diffRank(hand: Hand) {
-    if (this.rank !== hand.rank) {
-      return this.rank - hand.rank;
+  private checkRank() {
+    let rank: Rank = new Rank(RankType.HIGH_CARD, [...this.cardRanks.keys()]);
+    for (let i = 0; i < this.rankCheckers.length; i++) {
+      const res = this.rankCheckers[i].check(this);
+      if (res) {
+        rank = res;
+        break;
+      }
     }
-    return this.diffCardArray(this.scoringCardRanks, hand.scoringCardRanks);
-  }
-
-  private diffCardArray(a: CardRank[], b: CardRank[], index = 0): number {
-    if (index > a.length) {
-      return 0;
-    }
-    if (a[index] !== b[index]) {
-      return a[index] - b[index];
-    }
-    return this.diffCardArray(a, b, index + 1);
+    return rank;
   }
 }
