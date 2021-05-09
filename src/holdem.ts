@@ -3,7 +3,7 @@ import { HoldemRound, Round } from './round';
 import { Deck } from './deck/deck';
 import { Card } from './deck/card';
 import { Action } from './action/action';
-import { Rank } from './hand/rank';
+import { Hand } from './hand/hand';
 
 export class Holdem {
   private readonly deck = new Deck();
@@ -28,10 +28,10 @@ export class Holdem {
 
   get sortedActivePlayerHandRanks() {
     return this.players
-      .filter((player) => player.isActive)
-      .map((player): [Player, Rank] => [
+      .filter((player) => !player.isOut)
+      .map((player): [Player, Hand] => [
         player,
-        player.getHighestHandRank(this.communityCards),
+        player.getMaxHand(this.communityCards),
       ])
       .reduce((pre, [curPlayer, curRank]) => {
         for (let i = 0; i <= pre.length; i++) {
@@ -39,7 +39,7 @@ export class Holdem {
             pre.push([curRank, [curPlayer]]);
             break;
           }
-          const diff = curRank.diff(pre[i][0]);
+          const diff = curRank.compareTo(pre[i][0]);
           if (diff > 0) {
             pre.unshift([curRank, [curPlayer]]);
             break;
@@ -50,7 +50,7 @@ export class Holdem {
           }
         }
         return pre;
-      }, new Array<[Rank, Player[]]>());
+      }, new Array<[Hand, Player[]]>());
   }
 
   get currentRound() {

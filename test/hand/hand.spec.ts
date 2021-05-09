@@ -1,6 +1,15 @@
 import { Hand } from '../../src/hand/hand';
 import { Card } from '../../src/deck/card';
-import { RankType } from '../../src/hand/rank-type';
+import { ThreeOfAKind } from '../../src/hand/ranks/three-of-a-kind';
+import { FullHouse } from '../../src/hand/ranks/full-house';
+import { FourOfAKind } from '../../src/hand/ranks/four-of-a-kind';
+import { RoyalFlush } from '../../src/hand/ranks/royal-flush';
+import { Flush } from '../../src/hand/ranks/flush';
+import { TwoPairs } from '../../src/hand/ranks/two-pairs';
+import { StraightFlush } from '../../src/hand/ranks/straight-flush';
+import { HighCard } from '../../src/hand/ranks/high-card';
+import { Straight } from '../../src/hand/ranks/straight';
+import { Pair } from '../../src/hand/ranks/pair';
 
 describe('hand test', () => {
   it('should throw error when not give 5 cards', () => {
@@ -18,7 +27,7 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(1, 0),
       ]);
-      expect(hand.rank.type).toEqual(RankType.ROYAL_FLUSH);
+      expect(hand.rank).toBeInstanceOf(RoyalFlush);
     });
 
     it('9 T J Q K with same suit should be Straight flush', () => {
@@ -29,7 +38,7 @@ describe('hand test', () => {
         new Card(12, 0),
         new Card(13, 0),
       ]);
-      expect(hand.rank.type).toEqual(RankType.STRAIGHT_FLUSH);
+      expect(hand.rank).toBeInstanceOf(StraightFlush);
     });
 
     it('9 K K K K should be Four of a kind', () => {
@@ -40,7 +49,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank.type).toEqual(RankType.FOUR_OF_A_KIND);
+      expect(hand.rank).toBeInstanceOf(FourOfAKind);
     });
 
     it('9 9 K K K should be Full house', () => {
@@ -51,7 +60,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank.type).toEqual(RankType.FULL_HOUSE);
+      expect(hand.rank).toBeInstanceOf(FullHouse);
     });
 
     it('same suit should be Flush', () => {
@@ -62,7 +71,7 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(13, 0),
       ]);
-      expect(hand.rank.type).toEqual(RankType.FLUSH);
+      expect(hand.rank).toBeInstanceOf(Flush);
     });
 
     it('T J Q K A with different suit should be Straight', () => {
@@ -73,7 +82,7 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(1, 0),
       ]);
-      expect(hand.rank.type).toEqual(RankType.STRAIGHT);
+      expect(hand.rank).toBeInstanceOf(Straight);
     });
 
     it('8 9 K K K should be Three of a kind', () => {
@@ -84,7 +93,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank.type).toEqual(RankType.THREE_OF_A_KIND);
+      expect(hand.rank).toBeInstanceOf(ThreeOfAKind);
     });
 
     it('8 9 9 K K should be Two pairs', () => {
@@ -95,7 +104,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank.type).toEqual(RankType.TWO_PAIRS);
+      expect(hand.rank).toBeInstanceOf(TwoPairs);
     });
 
     it('8 9 T K K should be Pairs', () => {
@@ -106,7 +115,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank.type).toEqual(RankType.PAIR);
+      expect(hand.rank).toBeInstanceOf(Pair);
     });
 
     it('8 9 T Q K should be high card', () => {
@@ -117,7 +126,7 @@ describe('hand test', () => {
         new Card(12, 2),
         new Card(13, 3),
       ]);
-      expect(hand.rank.type).toEqual(RankType.HIGH_CARD);
+      expect(hand.rank).toBeInstanceOf(HighCard);
     });
   });
 
@@ -130,7 +139,7 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(1, 0),
       ]);
-      expect(royalFlushHand.rank.type).toEqual(RankType.ROYAL_FLUSH);
+      expect(royalFlushHand.rank).toBeInstanceOf(RoyalFlush);
 
       const flushHand = new Hand([
         new Card(1, 0),
@@ -139,10 +148,10 @@ describe('hand test', () => {
         new Card(13, 0),
         new Card(13, 0),
       ]);
-      expect(flushHand.rank.type).toEqual(RankType.FLUSH);
+      expect(flushHand.rank).toBeInstanceOf(Flush);
 
-      expect(royalFlushHand.rank.diff(flushHand.rank)).toEqual(
-        RankType.ROYAL_FLUSH - RankType.FLUSH,
+      expect(royalFlushHand.rank.compareTo(flushHand.rank)).toEqual(
+        royalFlushHand.rank.value - flushHand.rank.value,
       );
     });
 
@@ -154,7 +163,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand1.rank.type).toEqual(RankType.PAIR);
+      expect(hand1.rank).toBeInstanceOf(Pair);
       const hand2 = new Hand([
         new Card(6, 0),
         new Card(7, 0),
@@ -162,8 +171,8 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand2.rank.type).toEqual(RankType.PAIR);
-      expect(hand1.rank.diff(hand2.rank)).toEqual(4 - 8);
+      expect(hand2.rank).toBeInstanceOf(Pair);
+      expect(hand1.rank.compareTo(hand2.rank)).toEqual(4 - 8);
     });
 
     it('diff should be 0 if hand rankType and card rankType all the same', () => {
@@ -174,7 +183,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand1.rank.type).toEqual(RankType.PAIR);
+      expect(hand1.rank).toBeInstanceOf(Pair);
       const hand2 = new Hand([
         new Card(2, 0),
         new Card(3, 0),
@@ -182,7 +191,7 @@ describe('hand test', () => {
         new Card(13, 2),
         new Card(13, 3),
       ]);
-      expect(hand1.rank.diff(hand2.rank)).toEqual(0);
+      expect(hand1.rank.compareTo(hand2.rank)).toEqual(0);
     });
   });
 });

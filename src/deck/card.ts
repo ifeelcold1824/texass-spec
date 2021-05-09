@@ -1,3 +1,5 @@
+import { CompareTo } from '../utils/compare-to';
+
 export enum Suit {
   SPADES,
   CLUBS,
@@ -7,10 +9,10 @@ export enum Suit {
 
 export type CardRank = number;
 
-export class Card {
+export class Card implements CompareTo {
   constructor(public readonly rank: CardRank, public readonly suit: Suit) {}
 
-  diff(card: Card) {
+  compareTo(card: Card) {
     return this.rank - card.rank;
   }
 }

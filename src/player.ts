@@ -1,5 +1,7 @@
 import { Card } from './deck/card';
 import { Hand } from './hand/hand';
+import { toGetTheLargest } from './utils/compare-fn';
+import { getAllCombinations } from './utils/array';
 
 export class Player {
   id: PlayerId;
@@ -14,12 +16,12 @@ export class Player {
     this.balance = balance;
   }
 
-  get isActiveInRound() {
+  get isActive() {
     return this.status === 'ACTIVE';
   }
 
-  get isActive() {
-    return this.status !== 'OUT';
+  get isOut() {
+    return this.status === 'OUT';
   }
 
   has(amount: number) {
@@ -34,25 +36,10 @@ export class Player {
     this.status = 'OUT';
   }
 
-  getHighestHandRank(communityCards: Card[]) {
-    return this.getAllHandCombinations([
-      ...communityCards,
-      ...this.holeCards,
-    ]).reduce((pre, cur) => (pre.rank.diff(cur.rank) > 0 ? pre : cur)).rank;
-  }
-
-  private getAllHandCombinations(cards: Card[]) {
-    const res: Hand[] = [];
-    const recur = (currentCards: Card[], cards: Card[]) => {
-      for (let i = 0; i < cards.length; i++) {
-        if (currentCards.length === 4) {
-          res.push(new Hand([cards[i], ...currentCards]));
-        }
-        recur([...currentCards, cards[i]], cards.slice(i + 1));
-      }
-    };
-    recur([], cards);
-    return res;
+  getMaxHand(communityCards: Card[]) {
+    return getAllCombinations([...communityCards, ...this.holeCards], 5)
+      .map((cards) => new Hand(cards))
+      .reduce(toGetTheLargest);
   }
 }
 

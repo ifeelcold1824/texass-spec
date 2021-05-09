@@ -1,26 +1,32 @@
-import { RankType } from './rank-type';
 import { CardRank } from '../deck/card';
+import { Hand } from './hand';
+import { CompareTo } from '../utils/compare-to';
+import { deepCompareNumericArray } from '../utils/array';
 
-export class Rank {
-  constructor(readonly type: RankType, readonly scoringCardRanks: CardRank[]) {}
+export type RankValue = number;
 
-  diff(rank: Rank) {
-    if (this.type !== rank.type) {
-      return this.type - rank.type;
+export abstract class Rank implements CompareTo {
+  scoringCardRanks: CardRank[] = [];
+  abstract readonly value: RankValue;
+  constructor(private readonly hand: Hand) {}
+
+  protected abstract validateFn(hand: Hand): boolean;
+
+  isValid() {
+    if (this.validateFn(this.hand)) {
+      this.scoringCardRanks = this.hand.distinctCardRanks;
+      return true;
     }
-    return this.diffCardArrayRecur(
+    return false;
+  }
+
+  compareTo(rank: Rank) {
+    if (this.value !== rank.value) {
+      return this.value - rank.value;
+    }
+    return deepCompareNumericArray(
       this.scoringCardRanks,
       rank.scoringCardRanks,
     );
-  }
-
-  private diffCardArrayRecur(a: CardRank[], b: CardRank[], index = 0): number {
-    if (index > a.length) {
-      return 0;
-    }
-    if (a[index] !== b[index]) {
-      return a[index] - b[index];
-    }
-    return this.diffCardArrayRecur(a, b, index + 1);
   }
 }

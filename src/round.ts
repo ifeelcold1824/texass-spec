@@ -38,7 +38,7 @@ export class Round {
   get isRoundOver() {
     return (
       Array.from(this.pool.entries())
-        .filter(([player]) => player.isActiveInRound)
+        .filter(([player]) => player.isActive)
         .filter(([player, bet]) =>
           player.actedInRound ? bet < this.currentBet : true,
         ).length === 0
@@ -50,9 +50,7 @@ export class Round {
   }
 
   private initRound() {
-    this.activePlayers = this.players.filter(
-      (player) => player.isActiveInRound,
-    );
+    this.activePlayers = this.players.filter((player) => player.isActive);
     this.activePlayers.forEach((player) => (player.actedInRound = false));
     this.currentBet = 0;
     this.pool = new Map(this.activePlayers.map((player) => [player, 0]));
