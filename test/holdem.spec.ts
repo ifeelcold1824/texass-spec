@@ -4,6 +4,7 @@ import { HoldemRound } from '../src/round';
 import { Fold } from '../src/action/fold';
 import { Check } from '../src/action/check';
 import { Bet } from '../src/action/bet';
+import { Card } from '../src/deck/card';
 
 describe('Texass-client test', () => {
   let playerA: Player;
@@ -69,6 +70,72 @@ describe('Texass-client test', () => {
       new Map([
         [playerB, 20],
         [playerC, 10],
+      ]),
+    );
+  });
+
+  it('winner will takes all when only 1 player left', () => {
+    const client = new Holdem([playerA, playerB, playerC]);
+    client.execute(new Bet());
+    client.execute(new Bet());
+    client.execute(new Bet());
+    client.execute(new Fold());
+    expect(client.pool).toEqual(
+      new Map([
+        [playerB, 20],
+        [playerC, 10],
+      ]),
+    );
+    expect(client.gameOver).toBeTruthy();
+    expect(client.results).toEqual(
+      new Map([
+        [playerA, 0],
+        [playerB, 30],
+        [playerC, 0],
+      ]),
+    );
+  });
+
+  it('winners will share all when theirs multiple winners', () => {
+    const client = new Holdem([playerA, playerB, playerC]);
+    client.execute(new Bet());
+    client.execute(new Bet());
+
+    client.execute(new Bet());
+    client.execute(new Bet());
+
+    client.execute(new Bet());
+    client.execute(new Bet());
+
+    client.execute(new Bet());
+    client.execute(new Bet());
+    expect(client.pool).toEqual(
+      new Map([
+        [playerB, 40],
+        [playerC, 40],
+      ]),
+    );
+    expect(client.gameOver).toBeTruthy();
+    const mockCommunityCards = [
+      new Card(1, 1),
+      new Card(2, 0),
+      new Card(3, 1),
+      new Card(5, 0),
+      new Card(6, 1),
+    ];
+    client.communityCards = mockCommunityCards;
+    playerB.holeCards = [new Card(10, 2), new Card(9, 3)];
+    playerC.holeCards = [new Card(10, 3), new Card(9, 2)];
+    expect(
+      playerB
+        .getMaxHand(mockCommunityCards)
+        .compareTo(playerC.getMaxHand(mockCommunityCards)),
+    ).toEqual(0);
+    expect(client.results).toEqual(
+      new Map([
+        [playerA, 0],
+        [playerB, 40],
+        [playerC, 40],
       ]),
     );
   });

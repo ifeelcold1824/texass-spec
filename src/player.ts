@@ -36,7 +36,7 @@ export class Player {
     this.status = 'OUT';
   }
 
-  getMaxHand(communityCards: Card[]) {
+  getMaxHand(communityCards: Card[]): Hand {
     return getAllCombinations([...communityCards, ...this.holeCards], 5)
       .map((cards) => new Hand(cards))
       .reduce(toGetTheLargest);
